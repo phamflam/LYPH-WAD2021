@@ -12,13 +12,30 @@ class Main extends Component {
       showingAll: true,
       displayForm: false,
       addresses: [
-        { id: 1, fname: "Test", lname: "eins" },
+        {
+          currentUser: "admina",
+          id: 1,
+          fname: "Test",
+          lname: "eins",
+          street: "strasse",
+          number: "8",
+          zip: "12345",
+          city: "berlin",
+          state: "berlin",
+          country: "germany",
+          global: false,
+        },
         { id: 2, fname: "Test", lname: "zwei" },
-        { id: 3, fname: "HALLO", lname: "drei" },
+        { id: 3, fname: "OMG", lname: "drei" },
         { id: 4, fname: "HALLO", lname: "drei" },
         { id: 5, fname: "HALLO", lname: "drei" },
         { id: 6, fname: "HALLO", lname: "drei" },
         { id: 7, fname: "HALLO", lname: "drei" },
+        { id: 8, fname: "HALLO", lname: "drei" },
+        { id: 9, fname: "ehm", lname: "drei" },
+        { id: 10, fname: "HALLO", lname: "drei" },
+        { id: 11, fname: "HALLO", lname: "drei" },
+        { id: 12, fname: "HALLO", lname: "drei" },
       ],
     };
   }
@@ -76,9 +93,11 @@ class Main extends Component {
                 </button>
               </div>
               <div id="address-bar">
-                <div id="address-container">
+                {/* <div id="address-container">
                   <AddressList addresses={this.state.addresses} />
-                </div>
+                </div> */}
+                <AddressList addresses={this.state.addresses} />
+
                 <button
                   onClick={this.openForm}
                   className="button button-large"

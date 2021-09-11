@@ -1,6 +1,6 @@
 import express from "express";
-import data from "../data";
-import util from "../util";
+import data from "../data.js";
+import util from "../util.js";
 
 exports.router = express.Router();
 exports.router.get("/", (req, res, next) => {

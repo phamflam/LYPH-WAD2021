@@ -7,6 +7,8 @@ import "./css/style.css";
 // import Navbar from './components/test/navbar';
 import TopNav from './components/topnav';
 import Login from './components/login';
+//TEST COMMIT
+
 
 class App extends Component {
   state = { currentuser: null, password: '', displayLogin: true };
@@ -86,7 +88,8 @@ class App extends Component {
   //      return;
   //  }
   //  this.state.currentuser = await response.json();
-  //  window.sessionStorage.setItem("user", data.get("username"));
+  
+  // window.sessionStorage.setItem("user", data.get("username"));
   //  window.sessionStorage.setItem("pass", data.get("password"));
 
   //  writeGreeting();
@@ -99,6 +102,10 @@ class App extends Component {
   handleLogout =() => {
     console.log("logged out")
     this.setState({displayLogin: true})
+    // window.sessionStorage.removeItem("user");
+    // window.sessionStorage.removeItem("pass");
+    // document.getElementById("username").value = "";
+    // document.getElementById("password").value = "";
 
   }
 
@@ -126,7 +133,7 @@ class App extends Component {
     return (
     <React.Fragment>
         <TopNav handleLogout={this.handleLogout} 
-        // handleGreeting= {this.handleGreeting}
+         //handleGreeting= {this.handleGreeting}
 />
         <Main />
         {/* <AddressBox />  */}

@@ -1,4 +1,4 @@
-// // ---1st attempt
+// ---1st attempt
 global.window = { screen: {} };
 global.document = {
     documentElement: { style: {} },
@@ -9,7 +9,7 @@ global.navigator = { userAgent: 'nodejs', platform: 'nodejs' };
 
 import express from 'express';
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3000;
 
 app.get('/index', (req, res) => {
     res.send('Hello World! ');
@@ -18,6 +18,29 @@ app.listen(port, () => {
    console.log(`Example app listening on port ${port}!`);
 });
 
+//2nd
+// global.window = { screen: {} };
+// global.document = {
+//     documentElement: { style: {} },
+//     getElementsByTagName: () => { return []; },
+//     createElement: () => { return {}; }
+// };
+// global.navigator = { userAgent: 'nodejs', platform: 'nodejs' };
+
+// import { app } from './app.js';
+// import debug from "debug"
+// import http from "http"
+// import {HttpError} from "http-errors"
+
+// const port = process.env.PORT || 3000;
+// app.set("port", port);
+// console.log(`Starting server on port ${port}`);
+
+// const server = http.createServer(app);
+
+// server.listen(port);
+// server.on("error", onError);
+// server.on("listening", onListening);
 
 // global.window = { screen: {} };
 // global.document = {

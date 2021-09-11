@@ -2,15 +2,27 @@ import React, { Component } from "react";
 
 class Address extends Component {
   render() {
-    // const { id, fname, lname } = this.props;
+    const { fname, lname, global } = this.props;
+    let alternate = false;
+    // handleColor = () => {
+    //   let alternateColor = false;
+    //   if (alternateColor) {
+    //     className = "address-alt";
+    //   }
+    //   alternateColor = !alternateColor;
+    // };
+
     return (
-      <div className="address">
-        {/* <h4>{id} </h4> */}
+      <div
+        //className="address"
+        className={alternate ? "address" : "address-alt"}
+        // className={global ? "global" : ""}
+      >
+        {(alternate = !alternate)}
         <span //style={{ paddingLeft: 10 }}
           className="address-name"
         >
-          {/* {fname + " " + lname}
-          {console.log()} */}
+          {fname + " " + lname}
         </span>
       </div>
     );

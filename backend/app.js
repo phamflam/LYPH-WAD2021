@@ -30,19 +30,19 @@
 
 // "use strict";
 // Object.defineProperty(exports, "__esModule", { value: true });
-export const app = void 0;
-import express, { json, static } from "express";
+// export const app = void 0;
+import express /*, { json, static }*/ from "express";
 import logger from "morgan";
-import { join } from "path";
+// import { join } from "path";
 import createError from "http-errors";
-import { router } from "./routes/users";
-import { router as _router } from "./routes/contacts";
+import userRoute  from "./routes/users.js";
+import contactRoute from "./routes/contacts.js";
 export const app = express();
 app.use(logger("dev"));
 app.use(json());
-app.use(static(join(__dirname, "public")));
-app.use("/users", router);
-app.use("/contacts", _router);
+// app.use(static(join(__dirname, "public")));
+app.use("/users", userRoute);
+app.use("/contacts", contactRoute);
 app.use((req, res, next) => {
     next(createError(404));
 });
