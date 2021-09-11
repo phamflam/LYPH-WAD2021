@@ -40,6 +40,8 @@ class Main extends Component {
     };
   }
 
+  currentAddr;
+
   openForm = () => {
     console.log("OPEN FORM");
     this.setState({ displayForm: !this.state.displayForm });

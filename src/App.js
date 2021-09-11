@@ -1,36 +1,82 @@
 import React, { Component } from 'react';
-// import Navbar from './components/navbar';
-// import Counters from './components/counters';
-// import Login from './components/login';
 import Main from './components/main';
 import "./css/style.css";
-// import Navbar from './components/test/navbar';
 import TopNav from './components/topnav';
 import Login from './components/login';
 //TEST COMMIT
 
-
 class App extends Component {
-  state = { currentuser: null, password: '', displayLogin: true };
+  state = { currentUser: null, password: '', displayLogin: true };
   baseURL = "http://localhost:3000/";
+  addressCache = new Map();
+  userCache = new Map();
 
-  // state = {
-  //   counters: [
-  //     { id: 1, value: 3 },
-  //     { id: 2, value: 0 },
-  //     { id: 3, value: 0 },
-  //     { id: 4, value: 0 },
-  //   ],
-  // };
+  
+async loadUserSession() {
 
-// constructor(props) {
-//   super(props);
-// }
+	let user = window.sessionStorage.getItem("user");
+	let pass = window.sessionStorage.getItem("pass");
+	if (!user || !pass)
+		return;
 
-// componentDidMount() {
-//   //AJAX call
+	const response = await fetch(this.baseURL + "users/", {
+		method: "POST",
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			username: user,
+			password: pass
+		})
+	});
 
-// }
+	if (!response || response.status !== 200) {
+		setTimeout(() => alert("Wrong username or password!"), 1);
+		return;
+	}
+
+	this.state.currentUser = await response.json();
+}
+
+
+async fetchAddresses(){
+  let response = await fetch(this.baseURL + "contacts/");
+	if (response.status !== 200) {
+		setTimeout(() => alert("Unable to communicate with server. Try again later"), 1);
+		throw new Error("Status: " + response.status);
+	}
+
+	let addresses = await response.json();
+	this.addressCache.clear();
+	addresses.forEach(value => {
+		if (!value.id)
+			return;
+
+		this.addressCache.set(value.id, value);
+	});
+}
+
+async fetchUsers() {
+      let response =  fetch(this.baseURL + "users/");
+      if (response.status !== 200) {
+          setTimeout(() => alert("Unable to communicate with server. Try again later"), 1);
+          throw new Error("Status: " + response.status);
+      }
+      let users =  response.json();
+      users.forEach(value => {
+          if (!value.id)
+              return;
+          this.userCache.set(value.id, value);
+      });
+}
+
+//fetch addr user??
+componentDidMount() {
+  //AJAX call
+// this.fetchAddresses();
+// this.fetchUsers();
+}
 
 // componentDidUpdate(prevProps, prevState) {
 //   if(prevProps.counter.value !== this.props.counter.value) {
