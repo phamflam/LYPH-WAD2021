@@ -1,7 +1,9 @@
-import express from "express";
-import data from "../data.js";
-import util from "../util.js";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express = require("express");
+const data = require("../data");
+const util_1 = require("../util");
 exports.router = express.Router();
 exports.router.get("/", (req, res, next) => {
     data.getAllContacts()
@@ -16,7 +18,7 @@ exports.router.post('/', (req, res) => {
         res.status(400).send("missing required input!");
         return;
     }
-    const rawContact = new util.AddressData(req.body.firstName, req.body.lastName, req.body.street, req.body.street_extra, req.body.zip, req.body.city, req.body.state, req.body.country, req.body.global);
+    const rawContact = new util_1.AddressData(req.body.firstName, req.body.lastName, req.body.street, req.body.street_extra, req.body.zip, req.body.city, req.body.state, req.body.country, req.body.global);
     if (req.body.pos) {
         rawContact.setLatLng(req.body.pos);
     }
@@ -36,7 +38,7 @@ exports.router.put('/:id', (req, res) => {
         res.status(400).send("missing required input!");
         return;
     }
-    const rawContact = new util.AddressData(req.body.firstName, req.body.lastName, req.body.street, req.body.street_extra, req.body.zip, req.body.city, req.body.state, req.body.country, req.body.global);
+    const rawContact = new util_1.AddressData(req.body.firstName, req.body.lastName, req.body.street, req.body.street_extra, req.body.zip, req.body.city, req.body.state, req.body.country, req.body.global);
     rawContact.setId(id);
     if (req.body.pos) {
         rawContact.setLatLng(req.body.pos);

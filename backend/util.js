@@ -1,8 +1,7 @@
-// "use strict";
-// Object.defineProperty(exports, "__esModule", { value: true });
-// const _User = exports.AddressData = void 0;
-// export { _User as User };
-export class IDHolder {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = exports.AddressData = void 0;
+class IDHolder {
     setId(id) {
         this.id = id;
         return this;
@@ -31,8 +30,7 @@ class AddressData extends IDHolder {
         return this;
     }
 }
-const _AddressData = AddressData;
-export { _AddressData as AddressData };
+exports.AddressData = AddressData;
 class User extends IDHolder {
     constructor(name, password, privileged = false) {
         super();
@@ -56,5 +54,4 @@ class User extends IDHolder {
         return this;
     }
 }
-const _User = User;
-export { _User as User };
+exports.User = User;

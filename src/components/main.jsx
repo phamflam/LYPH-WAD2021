@@ -28,14 +28,6 @@ class Main extends Component {
         { id: 2, fname: "Test", lname: "zwei" },
         { id: 3, fname: "OMG", lname: "drei" },
         { id: 4, fname: "HALLO", lname: "drei" },
-        { id: 5, fname: "HALLO", lname: "drei" },
-        { id: 6, fname: "HALLO", lname: "drei" },
-        { id: 7, fname: "HALLO", lname: "drei" },
-        { id: 8, fname: "HALLO", lname: "drei" },
-        { id: 9, fname: "ehm", lname: "drei" },
-        { id: 10, fname: "HALLO", lname: "drei" },
-        { id: 11, fname: "HALLO", lname: "drei" },
-        { id: 12, fname: "HALLO", lname: "drei" },
       ],
     };
   }

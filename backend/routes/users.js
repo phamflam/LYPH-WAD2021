@@ -1,9 +1,11 @@
-import { Router } from "express";
-import { getAllUsers, getUser } from "../data.js";
-export const router = Router();
-
-router.get("/", (req, res, next) => {
-    getAllUsers()
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express = require("express");
+const data = require("../data");
+exports.router = express.Router();
+exports.router.get("/", (req, res, next) => {
+    data.getAllUsers()
         .then(users => {
         res.status(200).send(users.map(u => u.clearPassword()));
     }).catch(err => {
@@ -11,9 +13,9 @@ router.get("/", (req, res, next) => {
         res.status(500).send(err);
     });
 });
-router.get("/:id", (req, res, next) => {
+exports.router.get("/:id", (req, res, next) => {
     let id = parseInt(req.params.id);
-    getUser(id)
+    data.getUser(id)
         .then(user => {
         res.status(200).send(user.clearPassword());
     }).catch(err => {
@@ -25,7 +27,7 @@ router.get("/:id", (req, res, next) => {
         res.status(500).send(err);
     });
 });
-router.post("/", (req, res) => {
+exports.router.post("/", (req, res) => {
     console.log(req.body);
     let username = req.body.username;
     let password = req.body.password;
@@ -33,7 +35,7 @@ router.post("/", (req, res) => {
         res.status(400).send("name + password is required");
         return;
     }
-    getAllUsers()
+    data.getAllUsers()
         .then(users => {
         let user = users.find(u => u.matches(username, password));
         if (!user) {

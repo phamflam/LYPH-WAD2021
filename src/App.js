@@ -71,11 +71,18 @@ async fetchUsers() {
       });
 }
 
+// handleLoad = () => {
+//   this.fetchUsers();
+//   this.loadUserSession();
+//   this.fetchAddresses();
+// }
+
 //fetch addr user??
 componentDidMount() {
   //AJAX call
-// this.fetchAddresses();
-// this.fetchUsers();
+// await this.fetchAddresses();
+// await this.fetchUsers();
+// window.addEventListener("load", this.handleLoad)
 }
 
 // componentDidUpdate(prevProps, prevState) {
