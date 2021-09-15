@@ -3,79 +3,14 @@ import Main from './components/main';
 import "./css/style.css";
 import TopNav from './components/topnav';
 import Login from './components/login';
+// import AddressList from './components/addresslist';
 //TEST COMMIT
 
 class App extends Component {
-  state = { currentUser: null, password: '', displayLogin: true };
-  baseURL = "http://localhost:3000/";
-  addressCache = new Map();
-  userCache = new Map();
-
-  
-async loadUserSession() {
-
-	let user = window.sessionStorage.getItem("user");
-	let pass = window.sessionStorage.getItem("pass");
-	if (!user || !pass)
-		return;
-
-	const response = await fetch(this.baseURL + "users/", {
-		method: "POST",
-		headers: {
-			"Accept": "application/json",
-			"Content-Type": "application/json"
-		},
-		body: JSON.stringify({
-			username: user,
-			password: pass
-		})
-	});
-
-	if (!response || response.status !== 200) {
-		setTimeout(() => alert("Wrong username or password!"), 1);
-		return;
-	}
-
-	this.state.currentUser = await response.json();
-}
-
-
-async fetchAddresses(){
-  let response = await fetch(this.baseURL + "contacts/");
-	if (response.status !== 200) {
-		setTimeout(() => alert("Unable to communicate with server. Try again later"), 1);
-		throw new Error("Status: " + response.status);
-	}
-
-	let addresses = await response.json();
-	this.addressCache.clear();
-	addresses.forEach(value => {
-		if (!value.id)
-			return;
-
-		this.addressCache.set(value.id, value);
-	});
-}
-
-async fetchUsers() {
-      let response =  fetch(this.baseURL + "users/");
-      if (response.status !== 200) {
-          setTimeout(() => alert("Unable to communicate with server. Try again later"), 1);
-          throw new Error("Status: " + response.status);
-      }
-      let users =  response.json();
-      users.forEach(value => {
-          if (!value.id)
-              return;
-          this.userCache.set(value.id, value);
-      });
-}
-
-// handleLoad = () => {
-//   this.fetchUsers();
-//   this.loadUserSession();
-//   this.fetchAddresses();
-// }
+  state = { currentUser: null, password: '', displayLogin: true};
+  // state = { currentUser: {id: null, name: "test", password:"test", privileged: false},displayLogin: true};
+  baseURL = "http://localhost:5000/";
+ 
 
 //fetch addr user??
 componentDidMount() {
@@ -83,6 +18,8 @@ componentDidMount() {
 // await this.fetchAddresses();
 // await this.fetchUsers();
 // window.addEventListener("load", this.handleLoad)
+console.log("currentUser", this.currentUser)
+
 }
 
 // componentDidUpdate(prevProps, prevState) {
@@ -119,49 +56,45 @@ componentDidMount() {
 
   handleLogin = async (event) => {
     event.preventDefault();
-   
-  //  let form = document.getElementById("login-form");
-  //  let valid = form.reportValidity();
-  //  if (!valid)
-  //      return;
-  //  const data = new FormData(form);
-  //  const response = await fetch("http://localhost:3000/users/", {
-  //      method: "POST",
-  //      headers: {
-  //          "Accept": "application/json",
-  //          "Content-Type": "application/json"
-  //      },
-  //      body: JSON.stringify({
-  //          username: data.get("username"),
-  //          password: data.get("password")
-  //      })
-  //  });
-  //  if (!response || response.status != 200) {
-  //      setTimeout(() => alert("Wrong username or password!"), 1);
-  //      return;
-  //  }
-  //  this.state.currentuser = await response.json();
-  
-  // window.sessionStorage.setItem("user", data.get("username"));
-  //  window.sessionStorage.setItem("pass", data.get("password"));
-
   //  writeGreeting();
    // if succeeded open main
-   this.setState({displayLogin: false, user:event.target.user, password: event.target.password})
+   this.setState({displayLogin: false, //OPEN MAIN
+     user:event.target.user, password: event.target.password})
    console.log("logged in from APP")
 
   }
 
   handleLogout =() => {
     console.log("logged out")
-    this.setState({displayLogin: true})
-    // window.sessionStorage.removeItem("user");
-    // window.sessionStorage.removeItem("pass");
+    this.setState({displayLogin: true}) //open LOGIN
+    window.sessionStorage.removeItem("user");
+    window.sessionStorage.removeItem("pass");
     // document.getElementById("username").value = "";
     // document.getElementById("password").value = "";
-
   }
 
+  
+   handleGreeting() {
+    const h = new Date().getHours();
+    let greetingText;
+    let name = this.currentUser.name ?? "USERTEST";
+    name = name[0].toUpperCase() + name.slice(1);
+  
+    if (h < 12) {
+      greetingText = `Guten Morgen ${name}!`;
+    } else if (h < 18) {
+      greetingText = `Hallo ${name}!`;
+    } else {
+      greetingText = `Nabend ${name}.`
+    }
+  
+    let greeting = document.getElementById("greeting");
+    if (!greeting) return;
+  
+    greeting.innerHTML = greetingText;
+    document.getElementById("topnav").style.display = "block";
+    console.log("Greeted")
+  }
 
   render() {
     
@@ -177,22 +110,24 @@ componentDidMount() {
     //       </main>
     //    </React.Fragment>
 
-    if(this.state.displayLogin){
+    if(this.state.displayLogin && this.currentUser == null){
       return <Login 
       handleLogin={this.handleLogin}
+      // onLogin={(e)=> e.preventDefault} 
       // handleLogin={(event) => event.preventDefault()}
       />
-    }
-    return (
+    } else {
+       return (
     <React.Fragment>
         <TopNav handleLogout={this.handleLogout} 
-         //handleGreeting= {this.handleGreeting}
+         handleGreeting= {this.handleGreeting}
 />
-        <Main />
-        {/* <AddressBox />  */}
-      
+        <Main>
+          {/* <AddressList addresses={this.state.addresses} /> */}
+        </Main>      
     </React.Fragment>
-  );
+    );
+    }
   }
 }
 

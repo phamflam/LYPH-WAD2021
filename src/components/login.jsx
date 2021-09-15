@@ -4,12 +4,47 @@ import "../css/style.css";
 class Login extends React.Component {
   constructor(props) {
     super(props);
+    // const user = JSON.parse(window.sessionStorage.getItem("user")) || {};
+    // const password = JSON.parse(window.sessionStorage.getItem("pass")) || {};
+
     this.state = {
       user: "user",
       password: "password",
+      // user: user,
+      // password: password,
       showNav: false,
     };
     // this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  performLogin() {
+    let form = document.getElementById("login-form");
+    let valid = form.reportValidity();
+    if (!valid) return;
+
+    const data = new FormData(form);
+
+    const response = fetch(this.props.baseURL + "users/", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: data.get("username"),
+        password: data.get("password"),
+      }),
+    });
+
+    if (!response || response.status !== 200) {
+      setTimeout(() => alert("Wrong username or password!"), 1);
+      return;
+    }
+
+    this.props.currentUser = response.json();
+    // set sesh
+    window.sessionStorage.setItem("user", data.get("username"));
+    window.sessionStorage.setItem("pass", data.get("password"));
   }
 
   handleChange = (e) => {
@@ -17,6 +52,8 @@ class Login extends React.Component {
     // let p = event.target.password;
     // this.setState({ [u]: p });
     console.log(e.target.user);
+    console.log(e.target.password);
+
     this.setState({ user: e.target.user });
     this.setState({ password: e.target.password });
   };
@@ -67,6 +104,7 @@ class Login extends React.Component {
                 className="button"
                 id="btn_login"
                 type="submit"
+                // onClick={this.performLogin}
                 // onClick={this.handleSubmit}
                 onClick={this.props.handleLogin}
                 // onSubmit={this.props.handleLogin} //PREVENT DEFAULT DOENST WORK????

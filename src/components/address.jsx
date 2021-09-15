@@ -33,7 +33,7 @@ class Address extends Component {
         >
           {fname + " " + lname}
         </span>
-        <span className="mod-spans">
+        <span style={{ paddingLeft: 10 }} className="mod-spans">
           <button
             id="buttons" // for marker to get span element
             className="button button-small"

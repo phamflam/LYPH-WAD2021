@@ -34,6 +34,28 @@ class Main extends Component {
 
   currentAddr;
 
+  addressCache = new Map();
+  userCache = new Map();
+
+  fetchAddr = () => {
+    let response = fetch(this.props.baseURL + "contacts/");
+    if (response.status !== 200) {
+      setTimeout(
+        () => alert("Unable to communicate with server. Try again later"),
+        1
+      );
+      throw new Error("Status: " + response.status);
+    }
+
+    let addresses = response.json();
+    this.addressCache.clear();
+    addresses.forEach((value) => {
+      if (!value.id) return;
+
+      this.addressCache.set(value.id, value);
+    });
+  };
+
   openForm = () => {
     console.log("OPEN FORM");
     this.setState({ displayForm: !this.state.displayForm });
@@ -87,11 +109,7 @@ class Main extends Component {
                 </button>
               </div>
               <div id="address-bar">
-                {/* <div id="address-container">
-                  <AddressList addresses={this.state.addresses} />
-                </div> */}
                 <AddressList addresses={this.state.addresses} />
-
                 <button
                   onClick={this.openForm}
                   className="button button-large"
