@@ -9,8 +9,8 @@ import Login from './components/login';
 class App extends Component {
   state = { currentUser: null, password: '', displayLogin: true};
   // state = { currentUser: {id: null, name: "test", password:"test", privileged: false},displayLogin: true};
-  baseURL = "http://localhost:5000/";
- 
+ baseURL = "http://localhost:5000/";
+
 
 //fetch addr user??
 componentDidMount() {
@@ -31,28 +31,6 @@ console.log("currentUser", this.currentUser)
 // componentWillUnmount() {
 
 // }
-
-  handleIncrement = (counter) => {
-    const counters = [...this.state.counters];
-    const idx = counters.indexOf(counter);
-    counters[idx] = { ...counter };
-    counters[idx].value++;
-    this.setState({ counters });
-  };
-
-  handleDelete = (counterId) => {
-    const counters = this.state.counters.filter((c) => c.id !== counterId);
-    this.setState({ counters });
-  };
-
-  handleReset = () => {
-    const counters = this.state.counters.map((c) => {
-      c.value = 0;
-      return c;
-    });
-    this.setState({ counters });
-  };
-
 
   handleLogin = async (event) => {
     event.preventDefault();
@@ -97,19 +75,6 @@ console.log("currentUser", this.currentUser)
   }
 
   render() {
-    
-    //  return (
-    //    <React.Fragment>
-    //      <Navbar totalCounters= {this.state.counters.filter(c=> c.value > 0).length}/>
-    //       <main className="container">
-    //         <Counters 
-    //           counters={this.state.counters}
-    //           onReset={this.handleReset} 
-    //           onIncrement={this.handleIncrement} 
-    //           onDelete={this.handleDelete}/>
-    //       </main>
-    //    </React.Fragment>
-
     if(this.state.displayLogin && this.currentUser == null){
       return <Login 
       handleLogin={this.handleLogin}

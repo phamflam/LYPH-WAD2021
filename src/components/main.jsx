@@ -11,34 +11,20 @@ class Main extends Component {
     this.state = {
       showingAll: true,
       displayForm: false,
-      addresses: [
-        {
-          currentUser: "admina",
-          id: 1,
-          fname: "Test",
-          lname: "eins",
-          street: "strasse",
-          number: "8",
-          zip: "12345",
-          city: "berlin",
-          state: "berlin",
-          country: "germany",
-          global: false,
-        },
-        { id: 2, fname: "Test", lname: "zwei" },
-        { id: 3, fname: "OMG", lname: "drei" },
-        { id: 4, fname: "HALLO", lname: "drei" },
-      ],
+      isLoaded: false,
+      addressdata: [],
     };
+    // this.fetchAddr = this.fetchAddr.bind(this);
+    // this.fetchUser = this.fetchUser.bind(this);
   }
 
-  currentAddr;
-
+  // currentAddr;
+  baseURL = "http://localhost:5000/";
   addressCache = new Map();
   userCache = new Map();
 
-  fetchAddr = () => {
-    let response = fetch(this.props.baseURL + "contacts/");
+  async fetchAddr() {
+    let response = await fetch(this.baseURL + "contacts/");
     if (response.status !== 200) {
       setTimeout(
         () => alert("Unable to communicate with server. Try again later"),
@@ -47,14 +33,68 @@ class Main extends Component {
       throw new Error("Status: " + response.status);
     }
 
-    let addresses = response.json();
+    let addresses = await response.json();
     this.addressCache.clear();
     addresses.forEach((value) => {
       if (!value.id) return;
-
       this.addressCache.set(value.id, value);
+
+      this.setState({
+        isLoaded: true,
+        addressdata: Array.from(this.addressCache.values()),
+      });
     });
-  };
+    console.log("data", this.addressCache);
+    console.log("fetched", this.state.addressdata);
+    console.log("loaded", this.state.isLoaded);
+  }
+
+  async fetchUser() {
+    // let response = await fetch("http://localhost:5000/users/");
+    let response = await fetch(this.baseURL + "users/");
+
+    if (response.status !== 200) {
+      setTimeout(
+        () => alert("Unable to communicate with server. Try again later"),
+        1
+      );
+      throw new Error("Status: " + response.status);
+    }
+
+    let users = await response.json();
+    users.forEach((value) => {
+      if (!value.id) return;
+
+      this.userCache.set(value.id, value);
+    });
+    console.log("userdata", this.userCache);
+    // console.log("fetched", this.state.addressdata);
+    console.log("loaded", this.state.isLoaded);
+  }
+
+  componentDidMount() {
+    this.fetchAddr();
+    this.fetchUser();
+  }
+
+  // fetchAddr = () => {
+  //   let response = fetch(this.props.baseURL + "contacts/");
+  //   if (response.status !== 200) {
+  //     setTimeout(
+  //       () => alert("Unable to communicate with server. Try again later"),
+  //       1
+  //     );
+  //     throw new Error("Status: " + response.status);
+  //   }
+
+  //   let addresses = response.json();
+  //   this.addressCache.clear();
+  //   addresses.forEach((value) => {
+  //     if (!value.id) return;
+
+  //     this.addressCache.set(value.id, value);
+  //   });
+  // };
 
   openForm = () => {
     console.log("OPEN FORM");
@@ -109,7 +149,7 @@ class Main extends Component {
                 </button>
               </div>
               <div id="address-bar">
-                <AddressList addresses={this.state.addresses} />
+                <AddressList addressdata={this.state.addressdata} />
                 <button
                   onClick={this.openForm}
                   className="button button-large"
@@ -132,7 +172,7 @@ class Main extends Component {
               />
               <Marker position={[52.54978805042941, 13.518109546538927]}>
                 <Popup>
-                  A pretty CSS3 popup. <br /> Easily customizable.
+                  tach <br /> meine kerle
                 </Popup>
               </Marker>
             </MapContainer>

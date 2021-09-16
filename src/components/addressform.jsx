@@ -24,6 +24,8 @@ class AddressForm extends React.Component {
   };
 
   render() {
+    // const { fname, lname, street, number, zip, city, state, country, global } =
+    //   this.props;
     return (
       <div id="screen_address" className="screen">
         <div className="content">
@@ -38,6 +40,7 @@ class AddressForm extends React.Component {
                 id="fname"
                 name="fname"
                 required
+                // value={fname}
               />
             </div>
             <div className="field">
