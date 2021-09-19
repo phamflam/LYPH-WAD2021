@@ -6,7 +6,7 @@ class Mark extends React.Component {
     const { fname, lname, pos } = this.props;
 
     return (
-      <Marker position={[[pos]]}>
+      <Marker position={[pos]}>
         <Popup>{fname + " " + lname}</Popup>
       </Marker>
     );

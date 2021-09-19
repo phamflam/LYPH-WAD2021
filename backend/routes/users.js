@@ -28,7 +28,7 @@ exports.router.get("/:id", (req, res, next) => {
     });
 });
 exports.router.post("/", (req, res) => {
-    console.log(req.body);
+    console.log("login ",req.body);
     let username = req.body.username;
     let password = req.body.password;
     if (!username || !password || username.length == 0 || password.length == 0) {

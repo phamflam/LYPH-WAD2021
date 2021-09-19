@@ -8,7 +8,6 @@ class Login extends React.Component {
       user: "",
       password: "",
     };
-    // this.handleSubmit = this.handleSubmit.bind(this);
   }
   baseURL = "http://localhost:5000/";
 
@@ -19,7 +18,7 @@ class Login extends React.Component {
 
     const data = new FormData(form);
 
-    const response = fetch(this.baseURL + "users/", {
+    const response = await fetch(this.baseURL + "users/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -40,7 +39,7 @@ class Login extends React.Component {
 
     let user = await response.json();
     console.log("user", user);
-    this.props.setCurrentUser(user);
+    // this.props.setCurrentUser(user);
     // set sesh
     window.sessionStorage.setItem("user", data.get("username"));
     window.sessionStorage.setItem("pass", data.get("password"));
@@ -86,8 +85,11 @@ class Login extends React.Component {
                 className="button"
                 id="btn_login"
                 type="submit"
-                // onClick={this.performLogin}
-                onClick={this.props.handleLogin}
+                onClick={(event) => {
+                  event.preventDefault();
+                  this.performLogin();
+                }}
+                // onClick={this.props.handleLogin}
                 // onSubmit={this.props.handleLogin} //PREVENT DEFAULT DOENST WORK????
               >
                 Login

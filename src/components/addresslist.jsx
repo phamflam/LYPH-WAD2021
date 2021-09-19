@@ -4,12 +4,18 @@ import "../css/style.css";
 // import { marker } from "leaflet";
 // import * as L from "leaflet";
 
+// Nameplate = (user, alt) => {
+//   return (
+//     <div className={"address-nameplate address" + (alt ? " address-alt" : "")}>
+//       <span className="address-name">{user.name}:</span>
+//     </div>
+//   );
+// };
+
 class AddressList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      alternateColor: false,
-    };
+    this.state = {};
   }
 
   render() {
@@ -24,10 +30,7 @@ class AddressList extends React.Component {
       //     .bindPopup(addr.firstName + " " + addr.lastName);
       // }
 
-      // handleColors = () => {
-      //   this.setState({ alternateColor: !this.state.alternateColor });
-      // };
-
+      let alternateColor = false;
       return (
         <Address
           // className={classGlobal}
@@ -45,7 +48,10 @@ class AddressList extends React.Component {
           owner={addr.owner}
           onModify={this.props.openForm}
           onMark={this.props.handleMarker}
-        ></Address>
+        >
+          {(alternateColor = !alternateColor)}
+          {/* <Nameplate></Nameplate>{" "} */}
+        </Address>
       );
     });
 
