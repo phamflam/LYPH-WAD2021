@@ -4,27 +4,22 @@ import "../css/style.css";
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    // const user = JSON.parse(window.sessionStorage.getItem("user")) || {};
-    // const password = JSON.parse(window.sessionStorage.getItem("pass")) || {};
-
     this.state = {
-      user: "user",
-      password: "password",
-      // user: user,
-      // password: password,
-      showNav: false,
+      user: "",
+      password: "",
     };
     // this.handleSubmit = this.handleSubmit.bind(this);
   }
+  baseURL = "http://localhost:5000/";
 
-  performLogin() {
+  performLogin = async () => {
     let form = document.getElementById("login-form");
     let valid = form.reportValidity();
     if (!valid) return;
 
     const data = new FormData(form);
 
-    const response = fetch(this.props.baseURL + "users/", {
+    const response = fetch(this.baseURL + "users/", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -41,27 +36,17 @@ class Login extends React.Component {
       return;
     }
 
-    this.props.currentUser = response.json();
+    // this.props.currentUser = await response.json();
+
+    let user = await response.json();
+    console.log("user", user);
+    this.props.setCurrentUser(user);
     // set sesh
     window.sessionStorage.setItem("user", data.get("username"));
     window.sessionStorage.setItem("pass", data.get("password"));
-  }
-
-  handleChange = (e) => {
-    // let u = event.target.user;
-    // let p = event.target.password;
-    // this.setState({ [u]: p });
-    console.log(e.target.user);
-    console.log(e.target.password);
-
-    this.setState({ user: e.target.user });
-    this.setState({ password: e.target.password });
-  };
-
-  handleSubmit = (e) => {
-    alert("submitted: " + this.state.user + this.state.password);
-    console.log("loggin in");
-    // e.preventDefault(); //WHY NOT WORKING??
+    //open main
+    this.props.handleLogin();
+    console.log("loggin FROM LOGIN");
   };
 
   render() {
@@ -70,9 +55,6 @@ class Login extends React.Component {
         <div className="content">
           <div id="login">
             <form id="login-form" autoComplete="on">
-              {/* <h1>
-                Hello {this.state.user} {this.state.password}
-              </h1> */}
               <label htmlFor="username">Username</label>
               <br />
               <input
@@ -82,8 +64,8 @@ class Login extends React.Component {
                 name="username"
                 autoComplete="username"
                 required
-                placeholder={this.state.user}
-                onChange={this.handleChange}
+                // placeholder={this.state.user}
+                // onChange={this.handleChange}
               />
               <br />
               <label htmlFor="password">Password</label>
@@ -95,8 +77,8 @@ class Login extends React.Component {
                 name="password"
                 autoComplete="current_password"
                 required
-                placeholder={this.state.password}
-                onChange={this.handleChange}
+                // placeholder={this.state.password}
+                // onChange={this.handleChange}
               />
               <br />
               <br />
@@ -105,7 +87,6 @@ class Login extends React.Component {
                 id="btn_login"
                 type="submit"
                 // onClick={this.performLogin}
-                // onClick={this.handleSubmit}
                 onClick={this.props.handleLogin}
                 // onSubmit={this.props.handleLogin} //PREVENT DEFAULT DOENST WORK????
               >

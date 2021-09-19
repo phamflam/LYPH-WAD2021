@@ -3,6 +3,7 @@ import "../css/style.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import AddressForm from "./addressform";
 import AddressList from "./addresslist";
+// import MarkerList from "./markerlist";
 // https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 
 class Main extends Component {
@@ -13,6 +14,7 @@ class Main extends Component {
       displayForm: false,
       isLoaded: false,
       addressdata: [],
+      markers: [],
     };
     // this.fetchAddr = this.fetchAddr.bind(this);
     // this.fetchUser = this.fetchUser.bind(this);
@@ -21,7 +23,6 @@ class Main extends Component {
   // currentAddr;
   baseURL = "http://localhost:5000/";
   addressCache = new Map();
-  userCache = new Map();
 
   async fetchAddr() {
     let response = await fetch(this.baseURL + "contacts/");
@@ -49,54 +50,11 @@ class Main extends Component {
     console.log("loaded", this.state.isLoaded);
   }
 
-  async fetchUser() {
-    // let response = await fetch("http://localhost:5000/users/");
-    let response = await fetch(this.baseURL + "users/");
-
-    if (response.status !== 200) {
-      setTimeout(
-        () => alert("Unable to communicate with server. Try again later"),
-        1
-      );
-      throw new Error("Status: " + response.status);
-    }
-
-    let users = await response.json();
-    users.forEach((value) => {
-      if (!value.id) return;
-
-      this.userCache.set(value.id, value);
-    });
-    console.log("userdata", this.userCache);
-    // console.log("fetched", this.state.addressdata);
-    console.log("loaded", this.state.isLoaded);
-  }
-
   componentDidMount() {
     this.fetchAddr();
-    this.fetchUser();
   }
 
-  // fetchAddr = () => {
-  //   let response = fetch(this.props.baseURL + "contacts/");
-  //   if (response.status !== 200) {
-  //     setTimeout(
-  //       () => alert("Unable to communicate with server. Try again later"),
-  //       1
-  //     );
-  //     throw new Error("Status: " + response.status);
-  //   }
-
-  //   let addresses = response.json();
-  //   this.addressCache.clear();
-  //   addresses.forEach((value) => {
-  //     if (!value.id) return;
-
-  //     this.addressCache.set(value.id, value);
-  //   });
-  // };
-
-  openForm = () => {
+  openAddForm = () => {
     console.log("OPEN FORM");
     this.setState({ displayForm: !this.state.displayForm });
   };
@@ -149,9 +107,12 @@ class Main extends Component {
                 </button>
               </div>
               <div id="address-bar">
-                <AddressList addressdata={this.state.addressdata} />
+                <AddressList
+                  addressdata={this.state.addressdata}
+                  onOpenForm={this.openForm}
+                />
                 <button
-                  onClick={this.openForm}
+                  onClick={this.openAddForm}
                   className="button button-large"
                   id="btn_add"
                 >
@@ -163,7 +124,7 @@ class Main extends Component {
             <MapContainer
               id="map"
               center={[52.54978805042941, 13.518109546538927]}
-              zoom={13}
+              zoom={11}
               scrollWheelZoom={false}
             >
               <TileLayer
@@ -175,6 +136,7 @@ class Main extends Component {
                   tach <br /> meine kerle
                 </Popup>
               </Marker>
+              {/* <MarkerList addressdata={this.state.addressdata} /> */}
             </MapContainer>
           </div>
         </div>

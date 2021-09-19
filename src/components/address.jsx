@@ -1,33 +1,32 @@
 import React, { Component } from "react";
-
 class Address extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-  handleAddressContent = () => {
-    console.log("SET CON");
+  state = {
+    alternateColor: false,
   };
   render() {
-    const { fname, lname, marker } = this.props;
-    let alternate = false;
-    // handleColor = () => {
-    //   let alternateColor = false;
-    //   if (alternateColor) {
-    //     className = "address-alt";
-    //   }
-    //   alternateColor = !alternateColor;
-    // };
+    const {
+      fname,
+      lname,
+      marker,
+      // global
+    } = this.props;
 
     if (marker !== undefined) {
       return <button className="button button-small">!</button>;
     }
+    // handleColors = () => {
+    //   this.setState({ alternateColor: !this.state.alternateColor });
+    // };
     return (
       <div
-        //className="address"
-        className={alternate ? "address" : "address-alt"}
-        // className={global ? "global" : ""}
+        className="address-alt"
+        // className={
+        //   this.state.alternateColor ? "address-alt" : "address"
+        // && global
+        // ? "global"
+        // : "address"
+        // }
       >
-        {(alternate = !alternate)}
         <span //style={{ paddingLeft: 10 }}
           className="address-name"
         >
@@ -37,7 +36,8 @@ class Address extends Component {
           <button
             id="buttons" // for marker to get span element
             className="button button-small"
-            onClick={this.props.handleAddressContent}
+            // onClick={this.handleAddressContent}
+            // onClick={this.openForm}
           >
             ~
           </button>

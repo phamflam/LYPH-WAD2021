@@ -2,31 +2,32 @@ import React from "react";
 import Address from "./address";
 import "../css/style.css";
 // import { marker } from "leaflet";
-
-// const classGlobal = className({
-//   global: (addr.global = true),
-// });
+// import * as L from "leaflet";
 
 class AddressList extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      alternateColor: false,
+    };
+  }
+
   render() {
     const { addressdata } = this.props;
-    console.log("from ADDRLIST", addressdata);
 
-    // if (error) {
-    //   return <div>Error: {error.message}</div>;
-    // } else
-    // if (isLoaded) {
-    //   return <span style={{ color: "black" }}>Loading ..</span>;
-    // } else {
     let addresses = addressdata.map((addr) => {
+      // console.log("pos", addr.pos);
+
       // if (addr.pos) {
       //   marker = L.marker(addr.pos)
       //     .addTo(markers)
       //     .bindPopup(addr.firstName + " " + addr.lastName);
       // }
+
+      // handleColors = () => {
+      //   this.setState({ alternateColor: !this.state.alternateColor });
+      // };
+
       return (
         <Address
           // className={classGlobal}
@@ -41,6 +42,9 @@ class AddressList extends React.Component {
           country={addr.country}
           global={addr.global}
           pos={addr.pos}
+          owner={addr.owner}
+          onModify={this.props.openForm}
+          onMark={this.props.handleMarker}
         ></Address>
       );
     });

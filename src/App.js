@@ -7,40 +7,59 @@ import Login from './components/login';
 //TEST COMMIT
 
 class App extends Component {
-  state = { currentUser: null, password: '', displayLogin: true};
+  // state = { currentUser: null, password: '', displayLogin: true};
   // state = { currentUser: {id: null, name: "test", password:"test", privileged: false},displayLogin: true};
- baseURL = "http://localhost:5000/";
+  state ={currentUser: null, userdata: [], displayLogin:true}
+  baseURL = "http://localhost:5000/";
+  userCache = new Map();
 
+async fetchUser() {
+  // let response = await fetch("http://localhost:5000/users/");
+  let response = await fetch(this.baseURL + "users/");
 
-//fetch addr user??
+  if (response.status !== 200) {
+    setTimeout(
+      () => alert("Unable to communicate with server. Try again later"),
+      1
+    );
+    throw new Error("Status: " + response.status);
+  }
+
+  let users = await response.json();
+  users.forEach((value) => {
+    if (!value.id) return;
+
+    this.userCache.set(value.id, value);
+    this.setState({
+      isLoaded: true,
+      userdata: Array.from(this.userCache.values()),
+    });
+  });
+  console.log("userdata", this.userCache);
+  console.log("fetched user", this.state.userdata);
+}
+
 componentDidMount() {
   //AJAX call
-// await this.fetchAddresses();
-// await this.fetchUsers();
-// window.addEventListener("load", this.handleLoad)
-console.log("currentUser", this.currentUser)
+this.fetchUser();
+// this.setCurrentUser()
+// console.log("currentUser", this.currentUser)
+}
+
+  handleLogin = () => {
+  //  this.handleGreeting();
+   // if succeeded open main
+   this.setState({displayLogin: false, //OPEN MAIN
+   })
+
+     
+   console.log("logged in from APP")
 
 }
 
-// componentDidUpdate(prevProps, prevState) {
-//   if(prevProps.counter.value !== this.props.counter.value) {
-//     //AJAX call and get new data from server
-//   }
-// }
-
-// componentWillUnmount() {
-
-// }
-
-  handleLogin = async (event) => {
-    event.preventDefault();
-  //  writeGreeting();
-   // if succeeded open main
-   this.setState({displayLogin: false, //OPEN MAIN
-     user:event.target.user, password: event.target.password})
-   console.log("logged in from APP")
-
-  }
+setCurrentUser = (user)=>{
+this.setState({currentUser: user})
+}
 
   handleLogout =() => {
     console.log("logged out")
@@ -71,15 +90,12 @@ console.log("currentUser", this.currentUser)
   
     greeting.innerHTML = greetingText;
     document.getElementById("topnav").style.display = "block";
-    console.log("Greeted")
   }
 
   render() {
     if(this.state.displayLogin && this.currentUser == null){
       return <Login 
       handleLogin={this.handleLogin}
-      // onLogin={(e)=> e.preventDefault} 
-      // handleLogin={(event) => event.preventDefault()}
       />
     } else {
        return (
