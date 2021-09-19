@@ -5,8 +5,9 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: "",
-      password: "",
+      // user: "",
+      // password: "",
+      // currentUser: null,
     };
   }
   baseURL = "http://localhost:5000/";
@@ -38,14 +39,23 @@ class Login extends React.Component {
     // this.props.currentUser = await response.json();
 
     let user = await response.json();
-    console.log("user", user);
-    // this.props.setCurrentUser(user);
+    console.log("user", user.name);
+    this.props.setCurrentUser(user);
+    // if (user.id === 1) {
+    //   this.setState({ currentUser: "admina" });
+    // } else {
+    //   this.setState({ currentUser: "normalo" });
+    // }
+    // console.log("current", this.state.currentUser);
+
     // set sesh
     window.sessionStorage.setItem("user", data.get("username"));
     window.sessionStorage.setItem("pass", data.get("password"));
     //open main
     this.props.handleLogin();
+    // this.handleGreeting();
     console.log("loggin FROM LOGIN");
+    console.log("currentuser", this.props.currentUser);
   };
 
   render() {
@@ -63,8 +73,6 @@ class Login extends React.Component {
                 name="username"
                 autoComplete="username"
                 required
-                // placeholder={this.state.user}
-                // onChange={this.handleChange}
               />
               <br />
               <label htmlFor="password">Password</label>
@@ -76,8 +84,6 @@ class Login extends React.Component {
                 name="password"
                 autoComplete="current_password"
                 required
-                // placeholder={this.state.password}
-                // onChange={this.handleChange}
               />
               <br />
               <br />
@@ -89,8 +95,6 @@ class Login extends React.Component {
                   event.preventDefault();
                   this.performLogin();
                 }}
-                // onClick={this.props.handleLogin}
-                // onSubmit={this.props.handleLogin} //PREVENT DEFAULT DOENST WORK????
               >
                 Login
               </button>

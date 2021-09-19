@@ -47,18 +47,19 @@ this.fetchUser();
 }
 
   handleLogin = () => {
-  //  this.handleGreeting();
+   this.handleGreeting();
    // if succeeded open main
    this.setState({displayLogin: false, //OPEN MAIN
    })
 
      
    console.log("logged in from APP")
-
 }
 
 setCurrentUser = (user)=>{
 this.setState({currentUser: user})
+console.log("currentuser from app", this.state.currentUser)
+
 }
 
   handleLogout =() => {
@@ -71,37 +72,39 @@ this.setState({currentUser: user})
   }
 
   
-   handleGreeting() {
+  handleGreeting() {
     const h = new Date().getHours();
     let greetingText;
-    let name = this.currentUser.name ?? "USERTEST";
+    let name = this.state.currentUser.name ?? "USERTEST";
     name = name[0].toUpperCase() + name.slice(1);
-  
+
     if (h < 12) {
       greetingText = `Guten Morgen ${name}!`;
     } else if (h < 18) {
       greetingText = `Hallo ${name}!`;
     } else {
-      greetingText = `Nabend ${name}.`
+      greetingText = `Nabend ${name}.`;
     }
-  
+
     let greeting = document.getElementById("greeting");
     if (!greeting) return;
-  
+
     greeting.innerHTML = greetingText;
-    document.getElementById("topnav").style.display = "block";
+    //works???
+    // document.getElementById("topnav").style.display = "block";
   }
+  
 
   render() {
-    if(this.state.displayLogin && this.currentUser == null){
+    if(this.state.displayLogin && this.state.currentUser == null){
       return <Login 
       handleLogin={this.handleLogin}
+      setCurrentUser={this.setCurrentUser}
       />
     } else {
        return (
     <React.Fragment>
         <TopNav handleLogout={this.handleLogout} 
-         handleGreeting= {this.handleGreeting}
 />
         <Main>
           {/* <AddressList addresses={this.state.addresses} /> */}
