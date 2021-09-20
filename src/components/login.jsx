@@ -37,25 +37,21 @@ class Login extends React.Component {
     }
 
     // this.props.currentUser = await response.json();
-
     let user = await response.json();
-    console.log("user", user.name);
+    console.log("user from login", user.name);
     this.props.setCurrentUser(user);
-    // if (user.id === 1) {
-    //   this.setState({ currentUser: "admina" });
-    // } else {
-    //   this.setState({ currentUser: "normalo" });
-    // }
-    // console.log("current", this.state.currentUser);
 
     // set sesh
     window.sessionStorage.setItem("user", data.get("username"));
     window.sessionStorage.setItem("pass", data.get("password"));
+    console.log("storage from login ", window.sessionStorage);
+
     //open main
     this.props.handleLogin();
-    // this.handleGreeting();
+
     console.log("loggin FROM LOGIN");
-    console.log("currentuser", this.props.currentUser);
+    // cant get from props?
+    console.log("currentuser from login", this.props.currentUser);
   };
 
   render() {

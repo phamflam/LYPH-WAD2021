@@ -9,12 +9,11 @@ import Login from './components/login';
 class App extends Component {
   // state = { currentUser: null, password: '', displayLogin: true};
   // state = { currentUser: {id: null, name: "test", password:"test", privileged: false},displayLogin: true};
-  state ={currentUser: null, userdata: [], displayLogin:true}
+  state ={currentUser: null, userdata: [], displayLogin: true}
   baseURL = "http://localhost:5000/";
   userCache = new Map();
 
 async fetchUser() {
-  // let response = await fetch("http://localhost:5000/users/");
   let response = await fetch(this.baseURL + "users/");
 
   if (response.status !== 200) {
@@ -39,11 +38,41 @@ async fetchUser() {
   console.log("fetched user", this.state.userdata);
 }
 
+async loadUserSession() {
+	let user = window.sessionStorage.getItem("user");
+	let pass = window.sessionStorage.getItem("pass");
+	if (!user || !pass)
+		return;
+
+	const response = await fetch(this.baseURL + "users/", {
+		method: "POST",
+		headers: {
+			"Accept": "application/json",
+			"Content-Type": "application/json"
+		},
+		body: JSON.stringify({
+			username: user,
+			password: pass
+		})
+	});
+
+	if (!response || response.status !== 200) {
+		setTimeout(() => alert("Wrong username or password!"), 1);
+		return;
+	}
+
+	let cuser = await response.json();
+  this.setState({currentUser: cuser})
+  console.log("user from app", cuser.name);
+}
+
 componentDidMount() {
   //AJAX call
-this.fetchUser();
-// this.setCurrentUser()
-// console.log("currentUser", this.currentUser)
+ this.fetchUser();
+ this.loadUserSession();
+}
+componentWillUnmount(){
+
 }
 
   handleLogin = () => {
@@ -51,7 +80,6 @@ this.fetchUser();
    // if succeeded open main
    this.setState({displayLogin: false, //OPEN MAIN
    })
-
      
    console.log("logged in from APP")
 }
@@ -59,16 +87,16 @@ this.fetchUser();
 setCurrentUser = (user)=>{
 this.setState({currentUser: user})
 console.log("currentuser from app", this.state.currentUser)
-
 }
 
   handleLogout =() => {
-    console.log("logged out")
-    this.setState({displayLogin: true}) //open LOGIN
     window.sessionStorage.removeItem("user");
     window.sessionStorage.removeItem("pass");
-    // document.getElementById("username").value = "";
-    // document.getElementById("password").value = "";
+    
+    this.setState({displayLogin: true, currentUser: null}) //open LOGIN
+    // console.log("logindisplay", this.state.displayLogin)
+    console.log("logged out")
+    console.log("storage from logout ",window.sessionStorage)
   }
 
   
@@ -93,22 +121,24 @@ console.log("currentuser from app", this.state.currentUser)
     //works???
     // document.getElementById("topnav").style.display = "block";
   }
-  
+
+  clearLogout = ()=> {
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+  }
 
   render() {
-    if(this.state.displayLogin && this.state.currentUser == null){
+    if(this.state.displayLogin 
+      && this.state.currentUser == null ){
       return <Login 
       handleLogin={this.handleLogin}
       setCurrentUser={this.setCurrentUser}
       />
-    } else {
+    } else  {
        return (
     <React.Fragment>
-        <TopNav handleLogout={this.handleLogout} 
-/>
-        <Main>
-          {/* <AddressList addresses={this.state.addresses} /> */}
-        </Main>      
+        <TopNav handleLogout={this.handleLogout} logout={this.clearLogout}/>
+        <Main />      
     </React.Fragment>
     );
     }
