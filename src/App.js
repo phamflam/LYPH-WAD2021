@@ -70,8 +70,10 @@ componentDidMount() {
   //AJAX call
  this.fetchUser();
  this.loadUserSession();
+ console.log("current mounted user", this.state.currentUser)
 }
 componentWillUnmount(){
+  console.log("current unmounted user", this.state.currentUser)
 
 }
 
@@ -127,6 +129,8 @@ console.log("currentuser from app", this.state.currentUser)
     document.getElementById("password").value = "";
   }
 
+ 
+
   render() {
     if(this.state.displayLogin 
       && this.state.currentUser == null ){
@@ -137,7 +141,7 @@ console.log("currentuser from app", this.state.currentUser)
     } else  {
        return (
     <React.Fragment>
-        <TopNav handleLogout={this.handleLogout} logout={this.clearLogout}/>
+        <TopNav handleLogout={this.handleLogout} logout={this.clearLogout} />
         <Main />      
     </React.Fragment>
     );

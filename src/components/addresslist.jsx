@@ -18,6 +18,8 @@ class AddressList extends React.Component {
     this.state = {};
   }
 
+  updateList = () => {};
+
   render() {
     const { addressdata } = this.props;
 
@@ -46,8 +48,6 @@ class AddressList extends React.Component {
           global={addr.global}
           pos={addr.pos}
           owner={addr.owner}
-          onModify={this.props.openForm}
-          onMark={this.props.handleMarker}
         >
           {(alternateColor = !alternateColor)}
           {/* <Nameplate></Nameplate>{" "} */}

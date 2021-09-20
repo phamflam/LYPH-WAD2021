@@ -1,50 +1,66 @@
 import React, { Component } from "react";
 class Address extends Component {
-  state = {
-    alternateColor: false,
-  };
-  render() {
-    const {
-      fname,
-      lname,
-      marker,
-      // global
-    } = this.props;
+  state = {};
 
-    if (marker !== undefined) {
-      return <button className="button button-small">!</button>;
-    }
-    // handleColors = () => {
-    //   this.setState({ alternateColor: !this.state.alternateColor });
-    // };
-    return (
-      <div
-        className="address-alt"
-        // className={
-        //   this.state.alternateColor ? "address-alt" : "address"
-        // && global
-        // ? "global"
-        // : "address"
-        // }
-      >
-        <span //style={{ paddingLeft: 10 }}
-          className="address-name"
+  render() {
+    const { fname, lname, pos, global } = this.props;
+
+    if (pos !== undefined) {
+      return (
+        <div
+          // className="address-alt"
+          className={!global ? "global" : "address-alt"}
+          // className={
+          //   this.alternateColor
+          //     ? "address-alt"
+          //     : "address" && global
+          //     ? "global"
+          //     : "address"
+          // }
         >
-          {fname + " " + lname}
-        </span>
-        <span style={{ paddingLeft: 10 }} className="mod-spans">
-          <button
-            id="buttons" // for marker to get span element
-            className="button button-small"
-            // onClick={this.handleAddressContent}
-            // onClick={this.openForm}
-          >
-            ~
-          </button>
-          <button className="button button-small">!</button>
-        </span>
-      </div>
-    );
+          {/* {this.setState({ alternateColor: !this.state.alternateColor })} */}
+          <span className="address-name">{fname + " " + lname}</span>
+          <span style={{ paddingLeft: 10 }} className="mod-spans">
+            <button
+              id="buttons" // for marker to get span element
+              className="button button-small"
+              // onClick={this.handleAddressContent}
+              // onClick={this.openForm}
+            >
+              ~
+            </button>
+            <button className="button button-small">!</button>
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          // className="address-alt"
+          className={!global ? "global" : "address-alt"}
+          // className={
+          //   this.alternateColor
+          //     ? "address-alt"
+          //     : "address" && global
+          //     ? "global"
+          //     : "address"
+          // }
+        >
+          {/* {this.setState({ alternateColor: !this.state.alternateColor })} */}
+          <span className="address-name">{fname + " " + lname}</span>
+          <span style={{ paddingLeft: 10 }} className="mod-spans">
+            <button
+              id="buttons" // for marker to get span element
+              className="button button-small"
+              // onClick={this.handleAddressContent}
+              // onClick={this.openForm}
+            >
+              ~
+            </button>
+          </span>
+        </div>
+      );
+    }
   }
 }
 

@@ -12,7 +12,7 @@ class TopNav extends React.Component {
         className="topnav"
         //id="topnav" //doenst work bc display none
       >
-        <span id="greeting">Welcome back @USER</span>
+        <span id="greeting">Welcome back</span>
         <button
           className="button"
           id="btn_logout"

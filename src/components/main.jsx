@@ -112,7 +112,9 @@ class Main extends Component {
                   onOpenForm={this.openForm}
                 />
                 <button
-                  onClick={this.openAddForm}
+                  onClick={() => {
+                    this.openAddForm();
+                  }}
                   className="button button-large"
                   id="btn_add"
                 >
