@@ -14,6 +14,8 @@ class Address extends Component {
   openForm = () => {
     console.log("OPEN MODFORM");
     this.props.setFormState(true);
+    // this.props.setAddressContext(this.props.id);
+    console.log("Caddr ID ", this.props.id);
   };
   hideForm = () => {
     console.log("HIDE FORM");
@@ -33,26 +35,19 @@ class Address extends Component {
     );
   };
   componentDidMount() {
-    console.log("CU from ADDR ", this.props.currentUser);
+    // console.log("CU from ADDR ", this.props.currentUser);
   }
   render() {
-    const { fname, lname, pos, global } = this.props;
+    const {
+      fname,
+      lname,
+      pos,
+      //  global
+    } = this.props;
     return (
       <div
-        // className="address-alt"
-        className={
-          !global //if private
-            ? // "global"
-              "private"
-            : "address-alt"
-        }
-        // className={
-        //   this.alternateColor
-        //     ? "address-alt"
-        //     : "address" && global
-        //     ? "global"
-        //     : "address"
-        // }
+        className="address-alt"
+        // className={!global ? "global" : "address-alt"}
       >
         {/* {this.setState({ alternateColor: !this.state.alternateColor })} */}
         <span className="address-name">{fname + " " + lname}</span>
@@ -61,7 +56,9 @@ class Address extends Component {
             id="buttons" // for marker to get span element
             className="button button-small"
             // onClick={this.handleAddressContent}
-            onClick={this.openForm}
+            onClick={() => {
+              this.openForm();
+            }}
           >
             ~
           </button>

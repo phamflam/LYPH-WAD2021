@@ -5,15 +5,15 @@ import * as L from "leaflet";
 class AddressForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { currentAddr: null, diplayAdd: false };
+    this.state = {};
   }
   baseURL = "http://localhost:5000/";
 
   getCurrentAddress() {
-    if (this.state.currentAddr === null) {
+    if (this.props.currentAddr === null) {
       return undefined;
     }
-    return this.props.addressCache.get(this.state.currentAddr);
+    return this.props.addressCache.get(this.props.currentAddr);
   }
 
   displayInfo = (message) => {
@@ -30,9 +30,10 @@ class AddressForm extends React.Component {
   };
 
   componentDidMount() {
-    console.log("currentADDR", this.currentAddr);
-    // this.updateUsersForFormSelect();
+    // this.setAddressContext(this.props.id);
+    console.log("CA from FORM", this.props.id);
     console.log("CU from FORM ", this.props.currentUser);
+    // console.log("CU from FORM cache ", this.props.addressCache.get(this.props.currentUser))
   }
 
   handleAdd = () => {
@@ -94,9 +95,9 @@ class AddressForm extends React.Component {
   };
 
   setAddressContext(index) {
-    this.updateUsersForFormSelect();
+    // this.updateUsersForFormSelect();
 
-    this.currentAddr = index === -1 ? null : index;
+    this.props.currentAddr = index === -1 ? null : index;
     document.getElementById("skip_geo").checked = false;
     document.getElementById("skip_geo_div").style.display = "none";
 

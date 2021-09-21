@@ -18,52 +18,105 @@ class AddressList extends React.Component {
     this.state = {};
   }
 
-  updateList = () => {};
-  // setFormState = (state) => {};
-
   componentDidMount() {
     console.log("CU from LIST ", this.props.currentUser);
+    console.log("users from LIST ", this.props.userdata);
+    console.log("addrcache list", this.props.addressCache);
+    console.log("usercache list", this.props.userCache);
   }
 
   render() {
-    const { addressdata } = this.props;
+    // const { addressdata } = this.props;
 
-    let addresses = addressdata.map((addr) => {
-      // console.log("pos", addr.pos);
-
-      // if (addr.pos) {
-      //   marker = L.marker(addr.pos)
-      //     .addTo(markers)
-      //     .bindPopup(addr.firstName + " " + addr.lastName);
-      // }
-      let alternateColor = false;
-      return (
-        <Address
-          // className={classGlobal}
-          key={addr.id}
-          fname={addr.firstName}
-          lname={addr.lastName}
-          street={addr.street}
-          number={addr.number}
-          zip={addr.zip}
-          city={addr.city}
-          state={addr.state}
-          country={addr.country}
-          global={addr.global}
-          pos={addr.pos}
-          owner={addr.owner}
-          setFormState={this.props.setFormState}
-          currentUser={this.props.currentUser}
-        >
-          {(alternateColor = !alternateColor)}
-          {/* <Nameplate></Nameplate>{" "} */}
-        </Address>
+    let userSet = new Set();
+    userSet.add(this.props.currentUser.id ?? -1);
+    if (!this.props.showingAll) {
+      Array.from(this.props.userCache.values()).forEach((u) =>
+        userSet.add(u.id ?? -1)
       );
-    });
+    }
+    let alternateColor = false;
 
-    return <div id="address-container">{addresses}</div>;
+    return (
+      <div>
+        {Array.from(userSet).map((id) => {
+          let user = this.props.userCache.get(id);
+          if (!user) {
+            return null;
+          }
+
+          return (
+            <div key={id}>
+              {(alternateColor = !alternateColor)}
+              {Array.from(this.props.addressCache.values())
+                .filter((a) => a.owner === user.id)
+                .map((addr) => {
+                  if (this.props.currentUser.id !== user.id) {
+                    if (!this.props.currentUser.priviliged && !addr.global) {
+                      return null;
+                    }
+                  }
+                  alternateColor = !alternateColor;
+
+                  return (
+                    <Address
+                      key={addr.id}
+                      id={addr.id}
+                      fname={addr.firstName}
+                      lname={addr.lastName}
+                      street={addr.street}
+                      number={addr.number}
+                      zip={addr.zip}
+                      city={addr.city}
+                      state={addr.state}
+                      country={addr.country}
+                      global={addr.global}
+                      pos={addr.pos}
+                      owner={addr.owner}
+                      setFormState={this.props.setFormState}
+                      currentUser={this.props.currentUser}
+                      setAddressContext={this.props.setAddressContext}
+                      showingAll={this.props.showingAll}
+                    />
+                  );
+                })}
+            </div>
+          );
+        })}
+      </div>
+    );
+
+    // let addresses = addressdata.map((addr) => {
+    //   return (
+    //     <Address
+    //       // className={classGlobal}
+    //       key={addr.id}
+    //       id={addr.id}
+    //       fname={addr.firstName}
+    //       lname={addr.lastName}
+    //       street={addr.street}
+    //       number={addr.number}
+    //       zip={addr.zip}
+    //       city={addr.city}
+    //       state={addr.state}
+    //       country={addr.country}
+    //       global={addr.global}
+    //       pos={addr.pos}
+    //       owner={addr.owner}
+    //       setFormState={this.props.setFormState}
+    //       currentUser={this.props.currentUser}
+    //       setAddressContext={this.props.setAddressContext}
+    //       showingAll={this.props.showingAll}
+    //     >
+    //       {/* {(alternateColor = !alternateColor)} */}
+    //       {/* <Nameplate></Nameplate>{" "} */}
+    //     </Address>
+    //   );
+    // });
+
+    // return <div id="address-container">{addresses}</div>;
+    // }
   }
-  // }
 }
 
 export default AddressList;

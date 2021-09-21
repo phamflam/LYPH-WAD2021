@@ -18,7 +18,7 @@ class Main extends Component {
       displayForm: false,
       isLoaded: false,
       addressdata: [],
-      // userdata: this.props.userCache,
+      markers: [],
     };
   }
 
@@ -54,8 +54,9 @@ class Main extends Component {
 
   componentDidMount() {
     this.fetchAddr();
-    console.log("users ", this.props.users);
+    console.log("users ", this.props.userdata);
     console.log("CUser from MAIN", this.props.currentUser);
+    console.log("usercache main ", this.props.userCache);
   }
 
   openAddForm = () => {
@@ -72,6 +73,14 @@ class Main extends Component {
     this.setState({ displayForm: state });
   };
 
+  getAddressCache = () => {
+    return this.addressCache;
+  };
+
+  setAddressCache = (key, value) => {
+    this.addressCache.set(key, value);
+  };
+
   animateVisibility = () => {
     let all = document.getElementById("btn_all");
     let mine = document.getElementById("btn_mine");
@@ -80,11 +89,13 @@ class Main extends Component {
       all.classList.add("hidden");
       mine.classList.remove("hidden");
       this.setState({ showingAll: false });
+      //fetch visible addr from cache?
     } else {
       console.log("SHOW MINE");
       mine.classList.add("hidden");
       all.classList.remove("hidden");
       this.setState({ showingAll: true });
+      //fetch visible addr from cache?
     }
   };
 
@@ -92,6 +103,7 @@ class Main extends Component {
     if (this.state.displayForm) {
       return (
         <AddressForm
+          addressdata={this.state.addressdata}
           currentUser={this.props.currentUser}
           hideForm={this.hideForm}
         />
@@ -122,8 +134,14 @@ class Main extends Component {
               <div id="address-bar">
                 <AddressList
                   addressdata={this.state.addressdata}
+                  addressCache={this.addressCache}
                   currentUser={this.props.currentUser}
                   setFormState={this.setFormState}
+                  setAddressContext={this.setAddressContext}
+                  userdata={this.props.userdata}
+                  userCache={this.props.userCache}
+                  showingAll={this.state.showingAll}
+                  markers={this.state.markers}
                 />
                 <button
                   onClick={() => {

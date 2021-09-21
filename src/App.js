@@ -3,7 +3,6 @@ import Main from './components/main';
 import "./css/style.css";
 import TopNav from './components/topnav';
 import Login from './components/login';
-// import AddressList from './components/addresslist';
 //TEST COMMIT
 
 class App extends Component {
@@ -142,7 +141,7 @@ console.log("currentuser from app", this.state.currentUser)
        return (
     <React.Fragment>
         <TopNav handleLogout={this.handleLogout} logout={this.clearLogout} currentUser={this.state.currentUser} />
-        <Main users={this.state.userdata} currentUser={this.state.currentUser}/>      
+        <Main userCache={this.userCache} userdata={this.state.userdata} currentUser={this.state.currentUser}/>      
     </React.Fragment>
     );
     }
