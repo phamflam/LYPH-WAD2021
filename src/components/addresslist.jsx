@@ -19,6 +19,11 @@ class AddressList extends React.Component {
   }
 
   updateList = () => {};
+  // setFormState = (state) => {};
+
+  componentDidMount() {
+    console.log("CU from LIST ", this.props.currentUser);
+  }
 
   render() {
     const { addressdata } = this.props;
@@ -31,7 +36,6 @@ class AddressList extends React.Component {
       //     .addTo(markers)
       //     .bindPopup(addr.firstName + " " + addr.lastName);
       // }
-
       let alternateColor = false;
       return (
         <Address
@@ -48,6 +52,8 @@ class AddressList extends React.Component {
           global={addr.global}
           pos={addr.pos}
           owner={addr.owner}
+          setFormState={this.props.setFormState}
+          currentUser={this.props.currentUser}
         >
           {(alternateColor = !alternateColor)}
           {/* <Nameplate></Nameplate>{" "} */}

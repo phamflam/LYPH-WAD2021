@@ -225,6 +225,10 @@ input[type="submit"]:focus {
   top: 15px;
 }
 
+.private {
+  display: none;
+}
+
 .address {
   position: relative;
   padding: 10px;

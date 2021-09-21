@@ -1,9 +1,13 @@
 import React, { Component } from "react";
 import "../css/style.css";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  // Marker, Popup
+} from "react-leaflet";
 import AddressForm from "./addressform";
 import AddressList from "./addresslist";
-// import MarkerList from "./markerlist";
+import MarkerList from "./markerlist";
 // https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 
 class Main extends Component {
@@ -14,10 +18,8 @@ class Main extends Component {
       displayForm: false,
       isLoaded: false,
       addressdata: [],
-      markers: [],
+      // userdata: this.props.userCache,
     };
-    // this.fetchAddr = this.fetchAddr.bind(this);
-    // this.fetchUser = this.fetchUser.bind(this);
   }
 
   // currentAddr;
@@ -52,16 +54,22 @@ class Main extends Component {
 
   componentDidMount() {
     this.fetchAddr();
+    console.log("users ", this.props.users);
+    console.log("CUser from MAIN", this.props.currentUser);
   }
 
   openAddForm = () => {
-    console.log("OPEN FORM");
+    console.log("OPEN ADDFORM");
     this.setState({ displayForm: !this.state.displayForm });
   };
 
   hideForm = () => {
     console.log("HIDE FORM");
     this.setState({ displayForm: false });
+  };
+
+  setFormState = (state) => {
+    this.setState({ displayForm: state });
   };
 
   animateVisibility = () => {
@@ -82,7 +90,12 @@ class Main extends Component {
 
   render() {
     if (this.state.displayForm) {
-      return <AddressForm hideForm={this.hideForm} />;
+      return (
+        <AddressForm
+          currentUser={this.props.currentUser}
+          hideForm={this.hideForm}
+        />
+      );
     }
 
     return (
@@ -109,7 +122,8 @@ class Main extends Component {
               <div id="address-bar">
                 <AddressList
                   addressdata={this.state.addressdata}
-                  onOpenForm={this.openForm}
+                  currentUser={this.props.currentUser}
+                  setFormState={this.setFormState}
                 />
                 <button
                   onClick={() => {
@@ -127,18 +141,18 @@ class Main extends Component {
               id="map"
               center={[52.54978805042941, 13.518109546538927]}
               zoom={11}
-              scrollWheelZoom={false}
+              whenCreated={() => {}}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker position={[52.54978805042941, 13.518109546538927]}>
+              {/* <Marker position={[52.54978805042941, 13.518109546538927]}>
                 <Popup>
                   tach <br /> meine kerle
                 </Popup>
-              </Marker>
-              {/* <MarkerList addressdata={this.state.addressdata} /> */}
+              </Marker> */}
+              <MarkerList addressdata={this.state.addressdata} />
             </MapContainer>
           </div>
         </div>

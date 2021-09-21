@@ -5,7 +5,7 @@ import * as L from "leaflet";
 class AddressForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { currentUser: "", currentAddr: null, diplayAdd: false };
+    this.state = { currentAddr: null, diplayAdd: false };
   }
   baseURL = "http://localhost:5000/";
 
@@ -28,6 +28,12 @@ class AddressForm extends React.Component {
     feedback.innerText = message;
     feedback.style.display = "inline";
   };
+
+  componentDidMount() {
+    console.log("currentADDR", this.currentAddr);
+    // this.updateUsersForFormSelect();
+    console.log("CU from FORM ", this.props.currentUser);
+  }
 
   handleAdd = () => {
     console.log("ADDED");
@@ -87,10 +93,6 @@ class AddressForm extends React.Component {
     });
   };
 
-  componentDidMount() {
-    // this.updateUsersForFormSelect();
-  }
-
   setAddressContext(index) {
     this.updateUsersForFormSelect();
 
@@ -138,7 +140,8 @@ class AddressForm extends React.Component {
     if (!this.currentAddr) return;
 
     let user = this.props.addressCache.get(this.currentAddr)?.owner;
-    if (user && this.currentUser && user === this.currentUser.id) return; //"self" is selected by default, no need to select it again
+    if (user && this.props.currentUser && user === this.props.currentUser.id)
+      return; //"self" is selected by default, no need to select it again
 
     let select = document.getElementById("owner");
     Array.from(select.children).forEach((option) => {
@@ -155,7 +158,7 @@ class AddressForm extends React.Component {
     }
 
     let userSet = new Set();
-    userSet.add(this.state.this.currentUser?.id ?? -1);
+    userSet.add(this.props.currentUser?.id ?? -1);
     Array.from(this.userCache.values()).forEach((u) => userSet.add(u.id ?? -1));
     userSet.forEach((id) => {
       let user = this.userCache.get(id);
@@ -164,10 +167,7 @@ class AddressForm extends React.Component {
       let option = document.createElement("option");
       option.value = "" + user.id;
       let name = user.name;
-      if (
-        this.state.this.currentUser &&
-        this.state.this.currentUser.id === user.id
-      ) {
+      if (this.props.currentUser && this.props.currentUser.id === user.id) {
         name = "Self";
         option.selected = true;
       }
@@ -177,7 +177,7 @@ class AddressForm extends React.Component {
     });
 
     select.disabled =
-      !this.state.this.currentUser || !this.state.this.currentUser.privileged;
+      !this.props.currentUser || !this.props.currentUser.privileged;
   };
 
   render() {

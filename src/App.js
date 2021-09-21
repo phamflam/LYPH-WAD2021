@@ -7,8 +7,7 @@ import Login from './components/login';
 //TEST COMMIT
 
 class App extends Component {
-  // state = { currentUser: null, password: '', displayLogin: true};
-  // state = { currentUser: {id: null, name: "test", password:"test", privileged: false},displayLogin: true};
+
   state ={currentUser: null, userdata: [], displayLogin: true}
   baseURL = "http://localhost:5000/";
   userCache = new Map();
@@ -78,7 +77,7 @@ componentWillUnmount(){
 }
 
   handleLogin = () => {
-   this.handleGreeting();
+  //  this.handleGreeting();
    // if succeeded open main
    this.setState({displayLogin: false, //OPEN MAIN
    })
@@ -101,7 +100,7 @@ console.log("currentuser from app", this.state.currentUser)
     console.log("storage from logout ",window.sessionStorage)
   }
 
-  
+ /** time oriented but no need
   handleGreeting() {
     const h = new Date().getHours();
     let greetingText;
@@ -123,6 +122,7 @@ console.log("currentuser from app", this.state.currentUser)
     //works???
     // document.getElementById("topnav").style.display = "block";
   }
+  */ 
 
   clearLogout = ()=> {
     document.getElementById("username").value = "";
@@ -141,8 +141,8 @@ console.log("currentuser from app", this.state.currentUser)
     } else  {
        return (
     <React.Fragment>
-        <TopNav handleLogout={this.handleLogout} logout={this.clearLogout} />
-        <Main />      
+        <TopNav handleLogout={this.handleLogout} logout={this.clearLogout} currentUser={this.state.currentUser} />
+        <Main users={this.state.userdata} currentUser={this.state.currentUser}/>      
     </React.Fragment>
     );
     }
