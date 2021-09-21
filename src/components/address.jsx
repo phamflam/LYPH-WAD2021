@@ -27,29 +27,27 @@ class Address extends Component {
       <button
         className="button button-small"
         onClick={() => {
-          this.openMarker();
+          // this.openMarker();
+          this.props.map.setView(this.props.marker.getLatLng(), 13, {
+            animate: false,
+          });
+          this.props.marker.openPopup();
         }}
       >
         !
       </button>
     );
   };
-  componentDidMount() {
-    // console.log("CU from ADDR ", this.props.currentUser);
-  }
+  componentDidMount() {}
   render() {
-    const {
-      fname,
-      lname,
-      pos,
-      //  global
-    } = this.props;
+    const { fname, lname, alt, global, marker } = this.props;
     return (
       <div
-        className="address-alt"
-        // className={!global ? "global" : "address-alt"}
+        // className="address-alt"
+        className={
+          "address " + (alt ? "address-alt " : "") + (global ? "global" : "")
+        }
       >
-        {/* {this.setState({ alternateColor: !this.state.alternateColor })} */}
         <span className="address-name">{fname + " " + lname}</span>
         <span style={{ paddingLeft: 10 }} className="mod-spans">
           <button
@@ -62,7 +60,7 @@ class Address extends Component {
           >
             ~
           </button>
-          {pos !== undefined ? this.renderButton() : ""}
+          {marker !== undefined ? this.renderButton() : ""}
         </span>
       </div>
     );

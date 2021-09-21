@@ -4,7 +4,7 @@
 }
 
 body {
-  background: #282c34;
+  background: #282c34 !important;
   color: #acacac;
   margin: 0;
 }
@@ -209,6 +209,11 @@ input[type="submit"]:focus {
 
 .address {
   background-color: #3a455d;
+  position: relative;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  height: auto;
 }
 
 .address-alt {
@@ -223,14 +228,6 @@ input[type="submit"]:focus {
   position: absolute;
   left: 5px;
   top: 15px;
-}
-
-.address {
-  position: relative;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  height: 25px;
 }
 
 .address-nameplate {

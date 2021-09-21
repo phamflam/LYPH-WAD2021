@@ -1,13 +1,9 @@
 import React, { Component } from "react";
 import "../css/style.css";
-import {
-  MapContainer,
-  TileLayer,
-  // Marker, Popup
-} from "react-leaflet";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import AddressForm from "./addressform";
 import AddressList from "./addresslist";
-import MarkerList from "./markerlist";
+import { layerGroup } from "leaflet";
 // https://stackoverflow.com/questions/67552020/how-to-fix-error-failed-to-compile-node-modules-react-leaflet-core-esm-pat
 
 class Main extends Component {
@@ -18,13 +14,14 @@ class Main extends Component {
       displayForm: false,
       isLoaded: false,
       addressdata: [],
-      markers: [],
     };
   }
 
   // currentAddr;
   baseURL = "http://localhost:5000/";
   addressCache = new Map();
+  map = null;
+  markers = new layerGroup();
 
   async fetchAddr() {
     let response = await fetch(this.baseURL + "contacts/");
@@ -73,28 +70,20 @@ class Main extends Component {
     this.setState({ displayForm: state });
   };
 
-  getAddressCache = () => {
-    return this.addressCache;
-  };
-
-  setAddressCache = (key, value) => {
-    this.addressCache.set(key, value);
-  };
-
   animateVisibility = () => {
     let all = document.getElementById("btn_all");
     let mine = document.getElementById("btn_mine");
-    if (this.state.showingAll) {
+    if (!this.state.showingAll) {
       console.log("SHOW ALL");
       all.classList.add("hidden");
       mine.classList.remove("hidden");
-      this.setState({ showingAll: false });
+      this.setState({ showingAll: true });
       //fetch visible addr from cache?
     } else {
       console.log("SHOW MINE");
       mine.classList.add("hidden");
       all.classList.remove("hidden");
-      this.setState({ showingAll: true });
+      this.setState({ showingAll: false });
       //fetch visible addr from cache?
     }
   };
@@ -117,14 +106,14 @@ class Main extends Component {
             <div id="side-bar">
               <div id="visibility-buttons">
                 <button
-                  className="button button-large hidden"
+                  className="button button-large "
                   id="btn_mine"
                   onClick={this.animateVisibility}
                 >
                   Show Mine
                 </button>
                 <button
-                  className="button button-large"
+                  className="button button-large hidden"
                   id="btn_all"
                   onClick={this.animateVisibility}
                 >
@@ -141,7 +130,8 @@ class Main extends Component {
                   userdata={this.props.userdata}
                   userCache={this.props.userCache}
                   showingAll={this.state.showingAll}
-                  markers={this.state.markers}
+                  markers={this.markers}
+                  map={this.map}
                 />
                 <button
                   onClick={() => {
@@ -159,18 +149,19 @@ class Main extends Component {
               id="map"
               center={[52.54978805042941, 13.518109546538927]}
               zoom={11}
-              whenCreated={() => {}}
+              whenCreated={(m) => {
+                this.map = m;
+                this.markers.remove();
+                this.markers.addTo(m);
+              }}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {/* <Marker position={[52.54978805042941, 13.518109546538927]}>
-                <Popup>
-                  tach <br /> meine kerle
-                </Popup>
-              </Marker> */}
-              <MarkerList addressdata={this.state.addressdata} />
+              <Marker
+                position={[52.54978805042941, 13.518109546538927]}
+              ></Marker>
             </MapContainer>
           </div>
         </div>

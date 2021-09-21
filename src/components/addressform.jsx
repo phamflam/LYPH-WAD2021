@@ -9,12 +9,7 @@ class AddressForm extends React.Component {
   }
   baseURL = "http://localhost:5000/";
 
-  getCurrentAddress() {
-    if (this.props.currentAddr === null) {
-      return undefined;
-    }
-    return this.props.addressCache.get(this.props.currentAddr);
-  }
+  getCurrentAddress() {}
 
   displayInfo = (message) => {
     console.log("displayInfo: " + message);

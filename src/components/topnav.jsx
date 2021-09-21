@@ -32,7 +32,9 @@ class TopNav extends React.Component {
         //id="topnav" //doenst work bc display none
       >
         <span id="greeting">
-          Welcome back {this.props.currentUser.name.toUpperCase()}
+          Hello{" "}
+          {this.props.currentUser.name[0].toUpperCase() +
+            this.props.currentUser.name.slice(1)}
         </span>
         <button
           className="button"

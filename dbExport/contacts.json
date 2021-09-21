@@ -1,0 +1,77 @@
+[{
+  "_id": {
+    "$oid": "60d9bff5b68d532173bf369e"
+  },
+  "firstName": "Peter",
+  "lastName": "Silie",
+  "street": "Treskowallee",
+  "street_extra": "8",
+  "zip": "10318",
+  "city": "Berlin",
+  "state": "Berlin",
+  "country": "Germany",
+  "global": false,
+  "pos": {
+    "lat": 52.49315698891982,
+    "lng": 13.525212487067115
+  },
+  "id": 1,
+  "owner": 1
+},{
+  "_id": {
+    "$oid": "60d9c053b68d532173bf369f"
+  },
+  "firstName": "Julia",
+  "lastName": "Juli",
+  "street": "Boxhagener Straße",
+  "street_extra": "65",
+  "zip": "10245",
+  "city": "Berlin",
+  "state": "Berlin",
+  "country": "Germany",
+  "global": true,
+  "pos": {
+    "lat": 52.5061492614703,
+    "lng": 13.470787369496902
+  },
+  "id": 2,
+  "owner": 1
+},{
+  "_id": {
+    "$oid": "60d9c067b68d532173bf36a0"
+  },
+  "firstName": "Petra",
+  "lastName": "Silie",
+  "street": "Wilhelminenhofstraße",
+  "street_extra": "75A",
+  "zip": "12459",
+  "city": "Berlin",
+  "state": "Berlin",
+  "country": "Germany",
+  "global": false,
+  "pos": {
+    "lat": 52.45767478132759,
+    "lng": 13.526370284836261
+  },
+  "id": 3,
+  "owner": 2
+},{
+  "_id": {
+    "$oid": "60d9c078b68d532173bf36a1"
+  },
+  "firstName": "Anna",
+  "lastName": "Conda",
+  "street": "Rosenthaler Str.",
+  "street_extra": "66",
+  "zip": "10119",
+  "city": "Berlin",
+  "state": "Berlin",
+  "country": "Germany",
+  "global": true,
+  "pos": {
+    "lat": 52.528581566957996,
+    "lng": 13.402442854156751
+  },
+  "id": 4,
+  "owner": 2
+}]
