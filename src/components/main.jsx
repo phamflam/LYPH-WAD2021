@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "../css/style.css";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import AddressForm from "./addressform";
 import AddressList from "./addresslist";
 import { layerGroup } from "leaflet";
@@ -173,9 +173,6 @@ class Main extends Component {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <Marker
-                position={[52.54978805042941, 13.518109546538927]}
-              ></Marker>
             </MapContainer>
           </div>
         </div>

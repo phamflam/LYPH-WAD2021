@@ -52,7 +52,7 @@ class AddressForm extends React.Component {
     this.setState({ country: country });
   };
 
-  baseURL = "http://localhost:5000/";
+  baseURL = "http://localhost:5000/contacts/";
 
   updateGlobalState = (event, newState) => {
     if (newState == null) return;
@@ -62,6 +62,7 @@ class AddressForm extends React.Component {
   componentDidMount() {
     console.log("CA from FORM", this.props.addressCache.get(this.props.id));
     console.log("CU from FORM ", this.props.currentUser);
+    console.log("fetc", this.baseURL + this.props.id);
     let address = this.props.addressCache.get(this.props.id);
     if (!address) return;
 
@@ -78,7 +79,7 @@ class AddressForm extends React.Component {
       this.setState({ country: address.country });
   }
   componentWillUnmount() {
-    console.log("FORM DATA", this.state);
+    // console.log("FORM DATA", this.state);
   }
 
   commit = () => {
@@ -103,24 +104,74 @@ class AddressForm extends React.Component {
       address.id = this.props.id;
     }
 
-    this.props.addressCache.set(address.id ?? this.props.id, address);
+    this.findLatLng(address)
+      .then(async (address) => {
+        let res;
+        if (this.props.id < 0) {
+          res = await fetch(this.baseURL, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(address),
+          });
+
+          if (!res || res.status !== 201) {
+            setTimeout(() => alert("couldnt add"), 1);
+            return;
+          }
+
+          const location = res.headers.get("Location");
+          if (!location || !location.startsWith("/contacts/")) {
+            setTimeout(() => alert("missing new id"), 1);
+            return;
+          }
+          address.id = parseInt(location.substr(10));
+        } else {
+          res = await fetch(this.baseURL + this.props.id, {
+            method: "PUT",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(address),
+          });
+          if (!res || res.status !== 204) {
+            setTimeout(() => alert("couldnt update"), 1);
+            return;
+          }
+        }
+
+        // this.displayInfo(null);
+        this.props.addressCache.set(address.id ?? this.props.id, address);
+        this.props.setEditing(0);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  handleAdd = () => {
-    console.log("ADDED");
+  delete = async () => {
+    if (this.props.id < 0) return;
+
+    let res = await fetch(this.baseURL + this.props.id, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!res || res.status !== 204) {
+      setTimeout(() => alert("couldnt delete addr"), 1);
+      return;
+    }
+    this.props.addressCache.delete(this.props.id);
+    // this.displayInfo(null);
+    this.props.setEditing(0);
   };
 
-  handleUpdate() {
-    console.log("UPDATED");
-  }
-
-  handleDelete() {
-    console.log("DELETED");
-  }
-
-  handleCancel = () => {
-    console.log("CANCEL");
-  };
   displayInfo = (message) => {
     console.log("displayInfo: " + message);
     let feedback = document.getElementById("feedback");
@@ -178,6 +229,11 @@ class AddressForm extends React.Component {
   render() {
     // const { addressdata } = this.props;
 
+    let userSet = new Set();
+    userSet.add(this.props.currentUser.id ?? -1);
+    Array.from(this.props.userCache.values()).forEach((u) =>
+      userSet.add(u.id ?? -1)
+    );
     return (
       <div id="screen_address" className="screen">
         <div className="content">
@@ -193,7 +249,6 @@ class AddressForm extends React.Component {
                 name="fname"
                 required
                 value={this.state.firstName}
-                // onChange={this.handleEvent(this.setFirstName)}
                 onChange={(e) => this.setFirstName(e.target.value)}
               />
             </div>
@@ -206,7 +261,6 @@ class AddressForm extends React.Component {
                 id="lname"
                 name="lname"
                 value={this.state.lastName}
-                // onChange={this.handleEvent(this.setlastName)}
                 onChange={(e) => this.setlastName(e.target.value)}
                 required
               />
@@ -220,7 +274,6 @@ class AddressForm extends React.Component {
                 id="street"
                 name="street"
                 value={this.state.street}
-                // onChange={this.handleEvent(this.setStreet)}
                 onChange={(e) => this.setStreet(e.target.value)}
                 required
               />
@@ -234,7 +287,6 @@ class AddressForm extends React.Component {
                 id="number"
                 name="number"
                 value={this.state.number}
-                // onChange={this.handleEvent(this.setNumber)}
                 onChange={(e) => this.setNumber(e.target.value)}
                 required
               />
@@ -248,7 +300,6 @@ class AddressForm extends React.Component {
                 id="zip"
                 name="zip"
                 value={this.state.zip}
-                // onChange={this.handleEvent(this.setZip)}
                 onChange={(e) => this.setZip(e.target.value)}
                 required
               />
@@ -262,7 +313,6 @@ class AddressForm extends React.Component {
                 id="city"
                 name="city"
                 value={this.state.city}
-                // onChange={this.handleEvent(this.setCity)}
                 onChange={(e) => this.setCity(e.target.value)}
                 required
               />
@@ -276,7 +326,6 @@ class AddressForm extends React.Component {
                 id="state"
                 name="state"
                 value={this.state.state}
-                // onChange={this.handleEvent(this.setState)}
                 onChange={(e) => this.setaState(e.target.value)}
               />
             </div>
@@ -289,7 +338,6 @@ class AddressForm extends React.Component {
                 id="country"
                 name="country"
                 value={this.state.country}
-                // onChange={this.handleEvent(this.setCountry)}
                 onChange={(e) => this.setCountry(e.target.value)}
               />
             </div>
@@ -306,7 +354,26 @@ class AddressForm extends React.Component {
             <div>
               <label htmlFor="owner">Owner of Contact</label>
               <br />
-              <select className="c_input" id="owner" name="owner" />
+              <select
+                className="c_input"
+                id="owner"
+                name="owner"
+                value={this.state.owner}
+                onChange={(e) => {
+                  this.setOwner(e.target.value);
+                }}
+              >
+                {Array.from(userSet.values()).map((u) => {
+                  let user = this.props.userCache.get(u);
+                  if (!user) return null;
+
+                  return (
+                    <option value={u} key={u}>
+                      {this.props.currentUser.id === u ? "self" : user.name}
+                    </option>
+                  );
+                })}
+              </select>
             </div>
             <div id="skip_geo_div" style={{ display: "none" }}>
               <label htmlFor="skip_geo">Skip looking for coordinates</label>
@@ -318,7 +385,6 @@ class AddressForm extends React.Component {
               className="button"
               id="btn_cancel"
               type="button"
-              //onClick={this.handleCancel}
               onClick={this.props.hideForm}
             >
               Cancel
@@ -329,7 +395,8 @@ class AddressForm extends React.Component {
               type="button"
               onClick={(event) => {
                 event.preventDefault();
-                this.handleUpdate();
+                this.commit();
+                this.props.hideForm();
               }}
             >
               Save
@@ -340,7 +407,8 @@ class AddressForm extends React.Component {
               type="button"
               onClick={(event) => {
                 event.preventDefault();
-                this.handleUpdate();
+                this.commit();
+                this.props.hideForm();
               }}
             >
               Update
@@ -351,7 +419,9 @@ class AddressForm extends React.Component {
               type="button"
               onClick={(event) => {
                 event.preventDefault();
-                this.handleDelete();
+                // this.handleDelete();
+                this.delete();
+                this.props.hideForm();
               }}
             >
               Delete
