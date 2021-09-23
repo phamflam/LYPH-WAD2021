@@ -14,6 +14,7 @@ class Main extends Component {
       displayForm: false,
       isLoaded: false,
       addressdata: [],
+      editing: 0,
     };
   }
 
@@ -70,6 +71,10 @@ class Main extends Component {
     this.setState({ displayForm: state });
   };
 
+  setEditing = (id) => {
+    this.setState({ editing: id });
+  };
+
   animateVisibility = () => {
     let all = document.getElementById("btn_all");
     let mine = document.getElementById("btn_mine");
@@ -89,12 +94,19 @@ class Main extends Component {
   };
 
   render() {
-    if (this.state.displayForm) {
+    if (
+      this.state.displayForm
+      // || this.state.editing !== 0
+    ) {
       return (
         <AddressForm
           addressdata={this.state.addressdata}
           currentUser={this.props.currentUser}
           hideForm={this.hideForm}
+          id={this.state.editing}
+          setEditing={this.setEditing}
+          addressCache={this.addressCache}
+          userCache={this.props.userCache}
         />
       );
     }
@@ -132,10 +144,12 @@ class Main extends Component {
                   showingAll={this.state.showingAll}
                   markers={this.markers}
                   map={this.map}
+                  setEditing={this.setEditing}
                 />
                 <button
                   onClick={() => {
                     this.openAddForm();
+                    this.setEditing(-1);
                   }}
                   className="button button-large"
                   id="btn_add"

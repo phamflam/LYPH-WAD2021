@@ -8,13 +8,9 @@ import React, { Component } from "react";
 class Address extends Component {
   state = {};
 
-  openMarker = () => {
-    console.log("Marker: ", this.props.fname, this.props.lname);
-  };
   openForm = () => {
     console.log("OPEN MODFORM");
     this.props.setFormState(true);
-    // this.props.setAddressContext(this.props.id);
     console.log("Caddr ID ", this.props.id);
   };
   hideForm = () => {
@@ -27,8 +23,7 @@ class Address extends Component {
       <button
         className="button button-small"
         onClick={() => {
-          // this.openMarker();
-          this.props.map.setView(this.props.marker.getLatLng(), 13, {
+          this.props.map.setView(this.props.marker.getLatLng(), 11, {
             animate: false,
           });
           this.props.marker.openPopup();
@@ -40,7 +35,7 @@ class Address extends Component {
   };
   componentDidMount() {}
   render() {
-    const { fname, lname, alt, global, marker } = this.props;
+    const { fname, lname, alt, global, marker, setEditing, id } = this.props;
     return (
       <div
         // className="address-alt"
@@ -56,6 +51,7 @@ class Address extends Component {
             // onClick={this.handleAddressContent}
             onClick={() => {
               this.openForm();
+              setEditing(id ?? 0);
             }}
           >
             ~

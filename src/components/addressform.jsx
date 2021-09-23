@@ -1,35 +1,110 @@
 import React from "react";
 import "../css/style.css";
 import * as L from "leaflet";
+import { AddressData } from "./util";
 
 class AddressForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      firstName: "",
+      lastName: "",
+      street: "",
+      number: "",
+      zip: "",
+      city: "",
+      state: "",
+      country: "",
+      owner: "",
+      global: false,
+      fetching: false,
+    };
   }
+
+  setFirstName = (firstName) => {
+    this.setState({ firstName: firstName });
+  };
+  setlastName = (lastName) => {
+    this.setState({ lastName: lastName });
+  };
+  setStreet = (street) => {
+    this.setState({ street: street });
+  };
+  setNumber = (number) => {
+    this.setState({ number: number });
+  };
+  setZip = (zip) => {
+    this.setState({ zip: zip });
+  };
+  setCity = (city) => {
+    this.setState({ city: city });
+  };
+  setOwner = (owner) => {
+    this.setState({ owner: owner });
+  };
+  setGlobal = (global) => {
+    this.setState({ global: global });
+  };
+  setaState = (state) => {
+    this.setState({ state: state });
+  };
+  setCountry = (country) => {
+    this.setState({ country: country });
+  };
+
   baseURL = "http://localhost:5000/";
 
-  getCurrentAddress() {}
-
-  displayInfo = (message) => {
-    console.log("displayInfo: " + message);
-    let feedback = document.getElementById("feedback");
-    if (message === null) {
-      feedback.innerText = "";
-      feedback.style.display = "none";
-      return;
-    }
-
-    feedback.innerText = message;
-    feedback.style.display = "inline";
+  updateGlobalState = (event, newState) => {
+    if (newState == null) return;
+    this.setState({ global: newState });
   };
 
   componentDidMount() {
-    // this.setAddressContext(this.props.id);
-    console.log("CA from FORM", this.props.id);
+    console.log("CA from FORM", this.props.addressCache.get(this.props.id));
     console.log("CU from FORM ", this.props.currentUser);
-    // console.log("CU from FORM cache ", this.props.addressCache.get(this.props.currentUser))
+    let address = this.props.addressCache.get(this.props.id);
+    if (!address) return;
+
+    this.setState({ firstName: address.firstName });
+    this.setState({ lastName: address.lastName });
+    this.setState({ street: address.street });
+    this.setState({ number: address.street_extra });
+    this.setState({ zip: address.zip });
+    this.setState({ city: address.city });
+    this.setState({ owner: address.owner });
+    this.setState({ global: address.global });
+    if (address.state !== undefined) this.setState({ state: address.state });
+    if (address.country !== undefined)
+      this.setState({ country: address.country });
   }
+  componentWillUnmount() {
+    console.log("FORM DATA", this.state);
+  }
+
+  commit = () => {
+    let form = document.getElementById("address-form");
+    let valid = form.reportValidity();
+    if (!valid) return;
+
+    this.setState({ fetching: true });
+    let address = new AddressData(
+      this.state.firstName,
+      this.state.lastName,
+      this.state.street,
+      this.state.number,
+      this.state.zip,
+      this.state.city,
+      this.state.state ? this.state.state : undefined,
+      this.state.country ? this.state.country : undefined,
+      this.state.global
+    );
+    address.owner = this.state.owner;
+    if (this.props.id > 0) {
+      address.id = this.props.id;
+    }
+
+    this.props.addressCache.set(address.id ?? this.props.id, address);
+  };
 
   handleAdd = () => {
     console.log("ADDED");
@@ -46,7 +121,18 @@ class AddressForm extends React.Component {
   handleCancel = () => {
     console.log("CANCEL");
   };
+  displayInfo = (message) => {
+    console.log("displayInfo: " + message);
+    let feedback = document.getElementById("feedback");
+    if (message === null) {
+      feedback.innerText = "";
+      feedback.style.display = "none";
+      return;
+    }
 
+    feedback.innerText = message;
+    feedback.style.display = "inline";
+  };
   findLatLng = (address) => {
     return new Promise((resolve, reject) => {
       const skipGeoElem = document.getElementById("skip_geo");
@@ -89,93 +175,6 @@ class AddressForm extends React.Component {
     });
   };
 
-  setAddressContext(index) {
-    // this.updateUsersForFormSelect();
-
-    this.props.currentAddr = index === -1 ? null : index;
-    document.getElementById("skip_geo").checked = false;
-    document.getElementById("skip_geo_div").style.display = "none";
-
-    this.fillFormWithAddress();
-
-    const newAddr = index === -1;
-    document.getElementById("btn_save").style.display = !newAddr
-      ? "none"
-      : "inline";
-    document.getElementById("btn_update").style.display = newAddr
-      ? "none"
-      : "inline";
-    document.getElementById("btn_delete").style.display = newAddr
-      ? "none"
-      : "inline";
-  }
-
-  fillFormWithAddress() {
-    const address = this.getCurrentAddress();
-
-    const fname = address?.firstName ?? "";
-    const lname = address?.lastName ?? "";
-    const street = address?.street ?? "";
-    const number = address?.street_extra ?? "";
-    const zip = address?.zip ?? "";
-    const city = address?.city ?? "";
-    const state = address?.state ?? "";
-    const country = address?.country ?? "";
-    const global = address?.global ?? false;
-
-    document.getElementById("privacy").checked = !global;
-    document.getElementById("fname").value = fname;
-    document.getElementById("lname").value = lname;
-    document.getElementById("street").value = street;
-    document.getElementById("number").value = number;
-    document.getElementById("zip").value = zip;
-    document.getElementById("city").value = city;
-    document.getElementById("state").value = state || "";
-    document.getElementById("country").value = country || "";
-
-    if (!this.currentAddr) return;
-
-    let user = this.props.addressCache.get(this.currentAddr)?.owner;
-    if (user && this.props.currentUser && user === this.props.currentUser.id)
-      return; //"self" is selected by default, no need to select it again
-
-    let select = document.getElementById("owner");
-    Array.from(select.children).forEach((option) => {
-      if (option.getAttribute("value") === user?.toString())
-        option.setAttribute("selected", "true");
-    });
-  }
-
-  updateUsersForFormSelect = () => {
-    let select = document.getElementById("owner");
-
-    while (select.firstChild) {
-      select.removeChild(select.firstChild);
-    }
-
-    let userSet = new Set();
-    userSet.add(this.props.currentUser?.id ?? -1);
-    Array.from(this.userCache.values()).forEach((u) => userSet.add(u.id ?? -1));
-    userSet.forEach((id) => {
-      let user = this.userCache.get(id);
-      if (!user) return;
-
-      let option = document.createElement("option");
-      option.value = "" + user.id;
-      let name = user.name;
-      if (this.props.currentUser && this.props.currentUser.id === user.id) {
-        name = "Self";
-        option.selected = true;
-      }
-      option.appendChild(document.createTextNode(name));
-
-      select.appendChild(option);
-    });
-
-    select.disabled =
-      !this.props.currentUser || !this.props.currentUser.privileged;
-  };
-
   render() {
     // const { addressdata } = this.props;
 
@@ -193,7 +192,9 @@ class AddressForm extends React.Component {
                 id="fname"
                 name="fname"
                 required
-                // value={fname}
+                value={this.state.firstName}
+                // onChange={this.handleEvent(this.setFirstName)}
+                onChange={(e) => this.setFirstName(e.target.value)}
               />
             </div>
             <div className="field">
@@ -204,6 +205,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="lname"
                 name="lname"
+                value={this.state.lastName}
+                // onChange={this.handleEvent(this.setlastName)}
+                onChange={(e) => this.setlastName(e.target.value)}
                 required
               />
             </div>
@@ -215,6 +219,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="street"
                 name="street"
+                value={this.state.street}
+                // onChange={this.handleEvent(this.setStreet)}
+                onChange={(e) => this.setStreet(e.target.value)}
                 required
               />
             </div>
@@ -226,6 +233,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="number"
                 name="number"
+                value={this.state.number}
+                // onChange={this.handleEvent(this.setNumber)}
+                onChange={(e) => this.setNumber(e.target.value)}
                 required
               />
             </div>
@@ -237,6 +247,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="zip"
                 name="zip"
+                value={this.state.zip}
+                // onChange={this.handleEvent(this.setZip)}
+                onChange={(e) => this.setZip(e.target.value)}
                 required
               />
             </div>
@@ -248,13 +261,24 @@ class AddressForm extends React.Component {
                 type="text"
                 id="city"
                 name="city"
+                value={this.state.city}
+                // onChange={this.handleEvent(this.setCity)}
+                onChange={(e) => this.setCity(e.target.value)}
                 required
               />
             </div>
             <div className="field">
               <label htmlFor="state">State:</label>
               <br />
-              <input className="c_input" type="text" id="state" name="state" />
+              <input
+                className="c_input"
+                type="text"
+                id="state"
+                name="state"
+                value={this.state.state}
+                // onChange={this.handleEvent(this.setState)}
+                onChange={(e) => this.setaState(e.target.value)}
+              />
             </div>
             <div className="field">
               <label htmlFor="country">Country:</label>
@@ -264,6 +288,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="country"
                 name="country"
+                value={this.state.country}
+                // onChange={this.handleEvent(this.setCountry)}
+                onChange={(e) => this.setCountry(e.target.value)}
               />
             </div>
             <div>
@@ -300,7 +327,10 @@ class AddressForm extends React.Component {
               className="button"
               id="btn_save"
               type="button"
-              onClick={this.handleAdd}
+              onClick={(event) => {
+                event.preventDefault();
+                this.handleUpdate();
+              }}
             >
               Save
             </button>
@@ -308,7 +338,10 @@ class AddressForm extends React.Component {
               className="button"
               id="btn_update"
               type="button"
-              onClick={this.handleUpdate}
+              onClick={(event) => {
+                event.preventDefault();
+                this.handleUpdate();
+              }}
             >
               Update
             </button>
@@ -316,7 +349,10 @@ class AddressForm extends React.Component {
               className="button"
               id="btn_delete"
               type="button"
-              onClick={this.handleDelete}
+              onClick={(event) => {
+                event.preventDefault();
+                this.handleDelete();
+              }}
             >
               Delete
             </button>

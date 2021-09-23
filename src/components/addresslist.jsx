@@ -2,8 +2,6 @@ import React from "react";
 import Address from "./address";
 import "../css/style.css";
 import { marker } from "leaflet";
-// import { marker } from "leaflet";
-// import * as L from "leaflet";
 
 //stateless functional component
 const Nameplate = ({ user, alt }) => {
@@ -92,6 +90,8 @@ class AddressList extends React.Component {
                       alt={alternateColor}
                       map={this.props.map}
                       marker={m}
+                      // address={}
+                      setEditing={this.props.setEditing}
                     />
                   );
                 })}
