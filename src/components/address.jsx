@@ -46,13 +46,15 @@ class Address extends Component {
         <span className="address-name">{fname + " " + lname}</span>
         <span style={{ paddingLeft: 10 }} className="mod-spans">
           <button
-            id="buttons" // for marker to get span element
+            id="modify"
+            // id="buttons" // for marker to get span element
             className="button button-small"
             // onClick={this.handleAddressContent}
             onClick={() => {
               this.openForm();
               setEditing(id ?? 0);
             }}
+            disabled={this.props.disabled}
           >
             ~
           </button>

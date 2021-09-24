@@ -90,7 +90,12 @@ class AddressList extends React.Component {
                       alt={alternateColor}
                       map={this.props.map}
                       marker={m}
-                      // address={}
+                      disabled={
+                        !(
+                          this.props.currentUser.privileged ||
+                          addr.owner === this.props.currentUser.id
+                        )
+                      }
                       setEditing={this.props.setEditing}
                     />
                   );

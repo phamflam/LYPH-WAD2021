@@ -59,6 +59,7 @@ class Main extends Component {
 
   openAddForm = () => {
     console.log("OPEN ADDFORM");
+
     this.setState({ displayForm: !this.state.displayForm });
   };
 
@@ -96,7 +97,8 @@ class Main extends Component {
   render() {
     if (
       this.state.displayForm
-      // || this.state.editing !== 0
+      // ||
+      // this.state.editing !== 0
     ) {
       return (
         <AddressForm
@@ -138,7 +140,6 @@ class Main extends Component {
                   addressCache={this.addressCache}
                   currentUser={this.props.currentUser}
                   setFormState={this.setFormState}
-                  setAddressContext={this.setAddressContext}
                   userdata={this.props.userdata}
                   userCache={this.props.userCache}
                   showingAll={this.state.showingAll}
@@ -149,7 +150,7 @@ class Main extends Component {
                 <button
                   onClick={() => {
                     this.openAddForm();
-                    this.setEditing(-1);
+                    // this.setEditing(-1);
                   }}
                   className="button button-large"
                   id="btn_add"

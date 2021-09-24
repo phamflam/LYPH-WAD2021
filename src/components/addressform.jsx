@@ -15,7 +15,7 @@ class AddressForm extends React.Component {
       city: "",
       state: "",
       country: "",
-      owner: "",
+      owner: this.props.currentUser.id,
       global: false,
       fetching: false,
     };
@@ -60,6 +60,11 @@ class AddressForm extends React.Component {
   };
 
   componentDidMount() {
+    const select = document.getElementById("owner");
+    if (!this.props.currentUser.privileged) {
+      select.disabled = true;
+    }
+    console.log("hää", this.props.currentUser.privileged);
     console.log("CA from FORM", this.props.addressCache.get(this.props.id));
     console.log("CU from FORM ", this.props.currentUser);
     console.log("fetc", this.baseURL + this.props.id);
@@ -100,6 +105,7 @@ class AddressForm extends React.Component {
       this.state.global
     );
     address.owner = this.state.owner;
+    // this.setState({ owner: address.owner }); //??
     if (this.props.id > 0) {
       address.id = this.props.id;
     }
@@ -108,6 +114,8 @@ class AddressForm extends React.Component {
       .then(async (address) => {
         let res;
         if (this.props.id < 0) {
+          // const button_save = document.getElementById("btn_save");
+
           res = await fetch(this.baseURL, {
             method: "POST",
             headers: {
@@ -129,6 +137,8 @@ class AddressForm extends React.Component {
           }
           address.id = parseInt(location.substr(10));
         } else {
+          // const button_update = document.getElementById("btn_update");
+
           res = await fetch(this.baseURL + this.props.id, {
             method: "PUT",
             headers: {
@@ -226,9 +236,55 @@ class AddressForm extends React.Component {
     });
   };
 
-  render() {
-    // const { addressdata } = this.props;
+  renderModifyButtons = () => {
+    return (
+      <div>
+        <button
+          className="button"
+          id="btn_update"
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            this.commit();
+            this.props.hideForm();
+          }}
+        >
+          Update
+        </button>
+        <button
+          className="button"
+          id="btn_delete"
+          type="button"
+          onClick={(event) => {
+            event.preventDefault();
+            this.delete();
+            this.props.hideForm();
+          }}
+        >
+          Delete
+        </button>
+      </div>
+    );
+  };
 
+  renderSavebutton = () => {
+    return (
+      <button
+        className="button"
+        id="btn_save"
+        type="button"
+        onClick={(event) => {
+          event.preventDefault();
+          this.commit();
+          this.props.hideForm();
+        }}
+      >
+        Save
+      </button>
+    );
+  };
+
+  render() {
     let userSet = new Set();
     userSet.add(this.props.currentUser.id ?? -1);
     Array.from(this.props.userCache.values()).forEach((u) =>
@@ -348,7 +404,11 @@ class AddressForm extends React.Component {
                 type="checkbox"
                 id="privacy"
                 name="privacy"
-                defaultChecked
+                value={this.state.global}
+                onChange={(e) => {
+                  this.updateGlobalState(e.target.checked);
+                }}
+                checked={this.state.global ? false : true}
               />
             </div>
             <div>
@@ -365,7 +425,6 @@ class AddressForm extends React.Component {
               >
                 {Array.from(userSet.values()).map((u) => {
                   let user = this.props.userCache.get(u);
-                  if (!user) return null;
 
                   return (
                     <option value={u} key={u}>
@@ -380,52 +439,20 @@ class AddressForm extends React.Component {
               <br />
               <input type="checkbox" id="skip_geo" name="skip_geo" />
             </div>
-            <br />
             <button
               className="button"
               id="btn_cancel"
               type="button"
-              onClick={this.props.hideForm}
+              onClick={() => {
+                this.props.hideForm();
+                this.props.setEditing(0);
+              }}
             >
               Cancel
             </button>
-            <button
-              className="button"
-              id="btn_save"
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                this.commit();
-                this.props.hideForm();
-              }}
-            >
-              Save
-            </button>
-            <button
-              className="button"
-              id="btn_update"
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                this.commit();
-                this.props.hideForm();
-              }}
-            >
-              Update
-            </button>
-            <button
-              className="button"
-              id="btn_delete"
-              type="button"
-              onClick={(event) => {
-                event.preventDefault();
-                // this.handleDelete();
-                this.delete();
-                this.props.hideForm();
-              }}
-            >
-              Delete
-            </button>
+            {this.props.id > 0
+              ? this.renderModifyButtons()
+              : this.renderSavebutton()}
           </form>
           <span id="feedback" />
         </div>
