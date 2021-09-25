@@ -18,6 +18,7 @@ class AddressForm extends React.Component {
       owner: this.props.currentUser.id,
       global: false,
       fetching: false,
+      skipNext: undefined,
     };
   }
 
@@ -50,6 +51,12 @@ class AddressForm extends React.Component {
   };
   setCountry = (country) => {
     this.setState({ country: country });
+  };
+  setFetching = (fetching) => {
+    this.setState({ fetching: fetching });
+  };
+  setSkipNext = (skip) => {
+    this.setState({ skipNext: skip });
   };
 
   baseURL = "http://localhost:5000/contacts/";
@@ -92,6 +99,7 @@ class AddressForm extends React.Component {
     let valid = form.reportValidity();
     if (!valid) return;
 
+    this.setFetching(true);
     this.setState({ fetching: true });
     let address = new AddressData(
       this.state.firstName,
@@ -110,12 +118,11 @@ class AddressForm extends React.Component {
       address.id = this.props.id;
     }
 
-    this.findLatLng(address)
+    this.findLatLng(address, this.state.skipNext ?? false)
       .then(async (address) => {
         let res;
         if (this.props.id < 0) {
           // const button_save = document.getElementById("btn_save");
-
           res = await fetch(this.baseURL, {
             method: "POST",
             headers: {
@@ -124,21 +131,8 @@ class AddressForm extends React.Component {
             },
             body: JSON.stringify(address),
           });
-
-          if (!res || res.status !== 201) {
-            setTimeout(() => alert("couldnt add"), 1);
-            return;
-          }
-
-          const location = res.headers.get("Location");
-          if (!location || !location.startsWith("/contacts/")) {
-            setTimeout(() => alert("missing new id"), 1);
-            return;
-          }
-          address.id = parseInt(location.substr(10));
         } else {
           // const button_update = document.getElementById("btn_update");
-
           res = await fetch(this.baseURL + this.props.id, {
             method: "PUT",
             headers: {
@@ -147,18 +141,35 @@ class AddressForm extends React.Component {
             },
             body: JSON.stringify(address),
           });
-          if (!res || res.status !== 204) {
-            setTimeout(() => alert("couldnt update"), 1);
+        }
+
+        // if (!res || res.status !== 201) {
+        //   setTimeout(() => alert("couldnt add"), 1);
+        //   return;
+        // }
+        // if (!res || res.status !== 204) {
+        //   setTimeout(() => alert("couldnt update"), 1);
+        //   return;
+        // }
+
+        if (this.props.id < 0) {
+          const location = res.headers.get("Location");
+          if (!location || !location.startsWith("/contacts/")) {
+            setTimeout(() => alert("missing new id"), 1);
             return;
           }
+          address.id = parseInt(location.substr(10));
         }
 
         // this.displayInfo(null);
         this.props.addressCache.set(address.id ?? this.props.id, address);
         this.props.setEditing(0);
+        this.props.hideForm();
       })
       .catch((err) => {
         console.log(err);
+        this.setSkipNext(false);
+        this.setFetching(false);
       });
   };
 
@@ -194,11 +205,15 @@ class AddressForm extends React.Component {
     feedback.innerText = message;
     feedback.style.display = "inline";
   };
-  findLatLng = (address) => {
+  findLatLng = (address, skip) => {
     return new Promise((resolve, reject) => {
-      const skipGeoElem = document.getElementById("skip_geo");
-      if (skipGeoElem.checked) {
-        skipGeoElem.checked = false;
+      // const skipGeoElem = document.getElementById("skip_geo");
+      // if (skipGeoElem.checked) {
+      //   skipGeoElem.checked = false;
+      //   resolve(address);
+      //   return;
+      // }
+      if (skip) {
         resolve(address);
         return;
       }
@@ -222,8 +237,10 @@ class AddressForm extends React.Component {
           let features = response.features;
           if (!features)
             throw new Error("response object doesn't have features property");
-          if (features.length < 1)
+          if (features.length < 1) {
             throw new Error("response object doesn't include any results");
+            // alert("couldnt resolve Address")
+          }
 
           let coordinates = features[0].geometry.coordinates;
           address.setLatLng(new L.LatLng(coordinates[1], coordinates[0]));
@@ -232,6 +249,7 @@ class AddressForm extends React.Component {
         })
         .catch((err) => {
           reject(err);
+          // alert("couldnt resolve address");
         });
     });
   };
@@ -246,7 +264,7 @@ class AddressForm extends React.Component {
           onClick={(event) => {
             event.preventDefault();
             this.commit();
-            this.props.hideForm();
+            // this.props.hideForm();
           }}
         >
           Update
@@ -285,6 +303,9 @@ class AddressForm extends React.Component {
   };
 
   render() {
+    console.log("pub", this.state.global);
+    console.log("skip", this.state.skipNext);
+
     let userSet = new Set();
     userSet.add(this.props.currentUser.id ?? -1);
     Array.from(this.props.userCache.values()).forEach((u) =>
@@ -303,9 +324,9 @@ class AddressForm extends React.Component {
                 type="text"
                 id="fname"
                 name="fname"
-                required
                 value={this.state.firstName}
                 onChange={(e) => this.setFirstName(e.target.value)}
+                required
               />
             </div>
             <div className="field">
@@ -409,6 +430,7 @@ class AddressForm extends React.Component {
                   this.updateGlobalState(e.target.checked);
                 }}
                 checked={this.state.global ? false : true}
+                // defaultChecked={this.state.global ? false : true}
               />
             </div>
             <div>
@@ -434,10 +456,27 @@ class AddressForm extends React.Component {
                 })}
               </select>
             </div>
-            <div id="skip_geo_div" style={{ display: "none" }}>
+            <div
+              id="skip_geo_div"
+              style={{
+                display: this.state.skipNext === undefined ? "none" : "block",
+              }}
+            >
               <label htmlFor="skip_geo">Skip looking for coordinates</label>
               <br />
-              <input type="checkbox" id="skip_geo" name="skip_geo" />
+              <input
+                type="checkbox"
+                id="skip_geo"
+                name="skip_geo"
+                value={this.state.skipNext}
+                // onChange={() => {
+                //   this.setSkipNext(!this.state.skipNext);
+                // }}
+                onChange={(e) => {
+                  this.setSkipNext(e.target.checked);
+                }}
+                checked={this.state.skipNext ?? false}
+              />
             </div>
             <button
               className="button"
@@ -454,7 +493,14 @@ class AddressForm extends React.Component {
               ? this.renderModifyButtons()
               : this.renderSavebutton()}
           </form>
-          <span id="feedback" />
+          <span
+            id="feedback"
+            style={{
+              display: this.state.skipNext === undefined ? "none" : "block",
+            }}
+          >
+            Address could not be resolved!
+          </span>
         </div>
       </div>
     );
