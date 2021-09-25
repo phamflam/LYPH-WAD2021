@@ -61,8 +61,7 @@ class AddressForm extends React.Component {
 
   baseURL = "http://localhost:5000/contacts/";
 
-  updateGlobalState = (event, newState) => {
-    if (newState == null) return;
+  updateGlobalState = (newState) => {
     this.setState({ global: newState });
   };
 
@@ -193,18 +192,6 @@ class AddressForm extends React.Component {
     this.props.setEditing(0);
   };
 
-  displayInfo = (message) => {
-    console.log("displayInfo: " + message);
-    let feedback = document.getElementById("feedback");
-    if (message === null) {
-      feedback.innerText = "";
-      feedback.style.display = "none";
-      return;
-    }
-
-    feedback.innerText = message;
-    feedback.style.display = "inline";
-  };
   findLatLng = (address, skip) => {
     return new Promise((resolve, reject) => {
       // const skipGeoElem = document.getElementById("skip_geo");
@@ -299,6 +286,47 @@ class AddressForm extends React.Component {
       >
         Save
       </button>
+    );
+  };
+
+  renderPublicCheckbox = () => {
+    return (
+      <div>
+        <label htmlFor="privacy">Private</label>
+        <br />
+        <input
+          type="checkbox"
+          id="privacy"
+          name="privacy"
+          // value={this.state.global}
+          onChange={(e) => {
+            this.updateGlobalState(!e.target.checked);
+            console.log("checked", e.target.checked);
+          }}
+          // checked={this.state.global ? false : true}
+        />
+      </div>
+    );
+  };
+
+  renderPrivateCheckbox = () => {
+    return (
+      <div>
+        <label htmlFor="privacy">Private</label>
+        <br />
+        <input
+          type="checkbox"
+          id="privacy"
+          name="privacy"
+          // value={this.state.global}
+          onChange={(e) => {
+            this.updateGlobalState(!e.target.checked);
+            console.log("checked", e.target.checked);
+          }}
+          // checked={this.state.global ? false : true}
+          defaultChecked
+        />
+      </div>
     );
   };
 
@@ -425,14 +453,16 @@ class AddressForm extends React.Component {
                 type="checkbox"
                 id="privacy"
                 name="privacy"
-                value={this.state.global}
+                // value={this.state.global}
                 onChange={(e) => {
-                  this.updateGlobalState(e.target.checked);
+                  this.updateGlobalState(!e.target.checked);
+                  console.log("checked", e.target.checked);
                 }}
                 checked={this.state.global ? false : true}
                 // defaultChecked={this.state.global ? false : true}
               />
             </div>
+
             <div>
               <label htmlFor="owner">Owner of Contact</label>
               <br />
