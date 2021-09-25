@@ -172,7 +172,7 @@ class AddressForm extends React.Component {
         //   // address.id = location.substr(10);
         // }
         this.props.addressCache.set(address.id ?? this.props.id, address);
-        this.props.setEditing(-1);
+        this.props.setEditing(0);
         this.props.hideForm();
       })
       .catch((err) => {
