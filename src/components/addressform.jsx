@@ -99,7 +99,7 @@ class AddressForm extends React.Component {
     if (!valid) return;
 
     this.setFetching(true);
-    this.setState({ fetching: true });
+    // this.setState({ fetching: true });
     let address = new AddressData(
       this.state.firstName,
       this.state.lastName,
@@ -111,10 +111,13 @@ class AddressForm extends React.Component {
       this.state.country ? this.state.country : undefined,
       this.state.global
     );
-    address.owner = this.state.owner;
+    address.owner = parseInt(this.state.owner);
+
     // this.setState({ owner: address.owner }); //??
+    // console.log(address.owner);
     if (this.props.id > 0) {
-      address.id = this.props.id;
+      address.id = parseInt(this.props.id);
+      // address.id = this.props.id;
     }
 
     this.findLatLng(address, this.state.skipNext ?? false)
@@ -151,18 +154,25 @@ class AddressForm extends React.Component {
         //   return;
         // }
 
-        if (this.props.id < 0) {
-          const location = res.headers.get("Location");
-          if (!location || !location.startsWith("/contacts/")) {
-            setTimeout(() => alert("missing new id"), 1);
-            return;
-          }
-          address.id = parseInt(location.substr(10));
-        }
+        // if (!res || res.status < 200 || res.status >= 300) {
+        //   setTimeout(() => alert("couldnt update"), 1);
+        //   throw new Error("Unable to communicate");
+        // }
 
-        // this.displayInfo(null);
+        // console.log(res);
+        // if (this.props.id < 0) {
+        //   res.headers.forEach(console.log);
+
+        //   const location = res.headers.get("Location");
+        //   // if (!location || !location.startsWith("/contacts/")) {
+        //   //   setTimeout(() => alert("missing new id"), 1);
+        //   //   throw new Error("Missing new ID");
+        //   // }
+        //   address.id = parseInt(location.substr(10));
+        //   // address.id = location.substr(10);
+        // }
         this.props.addressCache.set(address.id ?? this.props.id, address);
-        this.props.setEditing(0);
+        this.props.setEditing(-1);
         this.props.hideForm();
       })
       .catch((err) => {
@@ -189,17 +199,12 @@ class AddressForm extends React.Component {
     }
     this.props.addressCache.delete(this.props.id);
     // this.displayInfo(null);
-    this.props.setEditing(0);
+    this.props.setEditing(-1); //works buggy but a solution
+    // this.props.setEditing(0);
   };
 
   findLatLng = (address, skip) => {
     return new Promise((resolve, reject) => {
-      // const skipGeoElem = document.getElementById("skip_geo");
-      // if (skipGeoElem.checked) {
-      //   skipGeoElem.checked = false;
-      //   resolve(address);
-      //   return;
-      // }
       if (skip) {
         resolve(address);
         return;
@@ -281,7 +286,7 @@ class AddressForm extends React.Component {
         onClick={(event) => {
           event.preventDefault();
           this.commit();
-          this.props.hideForm();
+          // this.props.hideForm();
         }}
       >
         Save
@@ -289,51 +294,7 @@ class AddressForm extends React.Component {
     );
   };
 
-  renderPublicCheckbox = () => {
-    return (
-      <div>
-        <label htmlFor="privacy">Private</label>
-        <br />
-        <input
-          type="checkbox"
-          id="privacy"
-          name="privacy"
-          // value={this.state.global}
-          onChange={(e) => {
-            this.updateGlobalState(!e.target.checked);
-            console.log("checked", e.target.checked);
-          }}
-          // checked={this.state.global ? false : true}
-        />
-      </div>
-    );
-  };
-
-  renderPrivateCheckbox = () => {
-    return (
-      <div>
-        <label htmlFor="privacy">Private</label>
-        <br />
-        <input
-          type="checkbox"
-          id="privacy"
-          name="privacy"
-          // value={this.state.global}
-          onChange={(e) => {
-            this.updateGlobalState(!e.target.checked);
-            console.log("checked", e.target.checked);
-          }}
-          // checked={this.state.global ? false : true}
-          defaultChecked
-        />
-      </div>
-    );
-  };
-
   render() {
-    console.log("pub", this.state.global);
-    console.log("skip", this.state.skipNext);
-
     let userSet = new Set();
     userSet.add(this.props.currentUser.id ?? -1);
     Array.from(this.props.userCache.values()).forEach((u) =>
@@ -456,7 +417,6 @@ class AddressForm extends React.Component {
                 // value={this.state.global}
                 onChange={(e) => {
                   this.updateGlobalState(!e.target.checked);
-                  console.log("checked", e.target.checked);
                 }}
                 checked={this.state.global ? false : true}
                 // defaultChecked={this.state.global ? false : true}

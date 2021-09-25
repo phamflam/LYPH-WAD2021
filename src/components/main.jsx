@@ -150,7 +150,8 @@ class Main extends Component {
                 <button
                   onClick={() => {
                     this.openAddForm();
-                    this.setEditing(-1);
+                    this.setEditing(0); //buggy solution
+                    // this.setEditing(-1);
                   }}
                   className="button button-large"
                   id="btn_add"
