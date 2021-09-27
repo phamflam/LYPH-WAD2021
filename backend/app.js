@@ -9,13 +9,18 @@ const userRoute = require("./routes/users");
 const contactRoute = require("./routes/contacts");
 
 const cors=require("cors");
-const corsOptions ={
-   origin:'*', 
-   credentials:true,            //access-control-allow-credentials:true
-   optionSuccessStatus:200,
-}
+// const corsOptions ={
+//    origin:'*', 
+//    credentials:true,            //access-control-allow-credentials:true
+//    optionSuccessStatus:200,
+// }
+
 exports.app = express();
-exports.app.use(cors(corsOptions)) // Use this after the variable declaration
+// exports.app.use(cors(corsOptions)) // Use this after the variable declaration
+exports.app.use(cors({
+	exposedHeaders: "Location"
+}));
+
 exports.app.use(logger("dev"));
 exports.app.use(express.json());
 exports.app.use(express.static(path.join(__dirname, "src")));

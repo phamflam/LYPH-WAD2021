@@ -144,34 +144,25 @@ class AddressForm extends React.Component {
             body: JSON.stringify(address),
           });
         }
+        //
+        if (!res || res.status < 200 || res.status >= 300) {
+          setTimeout(() => alert("couldnt update"), 1);
+          throw new Error("Unable to communicate");
+        }
 
-        // if (!res || res.status !== 201) {
-        //   setTimeout(() => alert("couldnt add"), 1);
-        //   return;
-        // }
-        // if (!res || res.status !== 204) {
-        //   setTimeout(() => alert("couldnt update"), 1);
-        //   return;
-        // }
+        console.log(res);
+        if (this.props.id < 0) {
+          const location = res.headers.get("Location");
+          if (!location || !location.startsWith("/contacts/")) {
+            setTimeout(() => alert("missing new id"), 1);
+            throw new Error("Missing new ID");
+          }
 
-        // if (!res || res.status < 200 || res.status >= 300) {
-        //   setTimeout(() => alert("couldnt update"), 1);
-        //   throw new Error("Unable to communicate");
-        // }
-
-        // console.log(res);
-        // if (this.props.id < 0) {
-        //   res.headers.forEach(console.log);
-
-        //   const location = res.headers.get("Location");
-        //   // if (!location || !location.startsWith("/contacts/")) {
-        //   //   setTimeout(() => alert("missing new id"), 1);
-        //   //   throw new Error("Missing new ID");
-        //   // }
-        //   address.id = parseInt(location.substr(10));
-        //   // address.id = location.substr(10);
-        // }
+          address.id = parseInt(location.substr(10));
+        }
+        //
         this.props.addressCache.set(address.id ?? this.props.id, address);
+
         this.props.setEditing(0);
         this.props.hideForm();
       })
@@ -199,8 +190,8 @@ class AddressForm extends React.Component {
     }
     this.props.addressCache.delete(this.props.id);
     // this.displayInfo(null);
-    this.props.setEditing(-1); //works buggy but a solution
-    // this.props.setEditing(0);
+    // this.props.setEditing(-1); //works buggy but a solution
+    this.props.setEditing(0);
   };
 
   findLatLng = (address, skip) => {
@@ -391,7 +382,7 @@ class AddressForm extends React.Component {
                 type="text"
                 id="state"
                 name="state"
-                value={this.state.state}
+                value={this.state.state || ""}
                 onChange={(e) => this.setaState(e.target.value)}
               />
             </div>
@@ -403,7 +394,7 @@ class AddressForm extends React.Component {
                 type="text"
                 id="country"
                 name="country"
-                value={this.state.country}
+                value={this.state.country || ""}
                 onChange={(e) => this.setCountry(e.target.value)}
               />
             </div>
