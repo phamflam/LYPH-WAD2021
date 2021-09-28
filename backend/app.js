@@ -23,7 +23,8 @@ exports.app.use(cors({
 
 exports.app.use(logger("dev"));
 exports.app.use(express.json());
-exports.app.use(express.static(path.join(__dirname, "src")));
+// exports.app.use(express.static(path.join(__dirname, "src")));
+exports.app.use(express.static(path.join(__dirname, "build")));
 exports.app.use("/users", userRoute.router);
 exports.app.use("/contacts", contactRoute.router);
 exports.app.use((req, res, next) => {
