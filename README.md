@@ -13,7 +13,7 @@ Only *admina* is able to see all contacts and to perform all CRUD operations.
 ```bash
 npm install
 ```
-open new terminal and run\
+open new terminal and run
 ```bash
 npm start
 ```
