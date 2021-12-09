@@ -10,5 +10,22 @@ Only *admina* is able to see all contacts and to perform all CRUD operations.
 
 
 ## ?
-`npm start` the application runs on port 3000\
-`node .` backend on port 5000
+```bash
+npm install
+```
+open new terminal and run\
+```bash
+npm start
+```
+the application runs on port 3000\
+open another terminal and run
+
+```bash
+cd backend
+
+```
+
+```bash
+node .
+```
+the backend on port 5000
